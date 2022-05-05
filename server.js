@@ -1,18 +1,18 @@
 const express = require("express")
 const app = express()
 const port = 3000
-
 const exphbs = require("express-handlebars")
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
+//disponibilizar css de Bootstrap y carpeta public
 app.use("/bootstrap", express.static(__dirname + "/node_modules/bootstrap/dist/css"))
 app.use("/bootstrap", express.static(__dirname + "/node_modules/bootstrap/dist/js"))
 app.use("/public", express.static(__dirname + "/public/"))
 
+//configuración de Handlebars
 app.set("view engine", "handlebars")
-
 app.engine("handlebars", exphbs.engine({
     layoutsDir: __dirname + "/views",
     partialsDir: __dirname + "/views/components"
@@ -26,10 +26,17 @@ app.get("/", (_, res) => {
 })
 
 //ruta get para el inicio de sesión
-app.get("/login", (req, res) => {
+app.get("/login", (_, res) => {
     res.render("login", {
         layout: "login"
     })
+})
+
+//ruta para registrar usuarios
+app.get("/signon", (_, res) => {
+    res.render("signon", {
+        layout: "signon"
+    })    
 })
 
 app.listen(port, () => console.log(`Servidor levantado en la dirección http://localhost:${port}`))
