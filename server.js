@@ -39,4 +39,10 @@ app.get("/signon", (_, res) => {
     })    
 })
 
+app.get("/admin", (req, res) => {
+    res.render("admin", {
+        layout: "admin"
+    })
+})
+
 app.listen(port, () => console.log(`Servidor levantado en la dirección http://localhost:${port}`))
