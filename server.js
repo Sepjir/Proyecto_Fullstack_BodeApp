@@ -39,9 +39,17 @@ app.get("/signon", (_, res) => {
     })    
 })
 
+//ruta para vista de administrador
 app.get("/admin", (req, res) => {
     res.render("admin", {
         layout: "admin"
+    })
+})
+
+//ruta para vista de stock
+app.get("/stock", (_, res) => {
+    res.render("stock", {
+        layout: "stock"
     })
 })
 
