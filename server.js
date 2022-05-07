@@ -60,4 +60,11 @@ app.get("/storekeeper", (_, res) => {
     })
 })
 
+//ruta vista para ingresar nueva mercadería a la bodega
+app.get("/reception", (_, res) => {
+    res.render("reception", {
+        layout: "reception"
+    })
+})
+
 app.listen(port, () => console.log(`Servidor levantado en la dirección http://localhost:${port}`))
