@@ -40,7 +40,7 @@ app.get("/signon", (_, res) => {
 })
 
 //ruta para vista de administrador
-app.get("/admin", (req, res) => {
+app.get("/admin", (_, res) => {
     res.render("admin", {
         layout: "admin"
     })
@@ -54,7 +54,7 @@ app.get("/stock", (_, res) => {
 })
 
 //ruta para vista como bodeguero
-app.get("/storekeeper", (req, res) => {
+app.get("/storekeeper", (_, res) => {
     res.render("store_keeper", {
         layout: "store_keeper"
     })
