@@ -53,4 +53,11 @@ app.get("/stock", (_, res) => {
     })
 })
 
+//ruta para vista como bodeguero
+app.get("/storekeeper", (req, res) => {
+    res.render("store_keeper", {
+        layout: "store_keeper"
+    })
+})
+
 app.listen(port, () => console.log(`Servidor levantado en la dirección http://localhost:${port}`))
