@@ -60,10 +60,17 @@ app.get("/storekeeper", (_, res) => {
     })
 })
 
-//ruta vista para ingresar nueva mercadería a la bodega
+//ruta vista para ingresar mercadería a la bodega
 app.get("/reception", (_, res) => {
     res.render("reception", {
         layout: "reception"
+    })
+})
+
+//ruta para vista de entrega de insumos
+app.get("/deliver", (req, res) => {
+    res.render("deliver" ,{
+        layout: "deliver"
     })
 })
 
