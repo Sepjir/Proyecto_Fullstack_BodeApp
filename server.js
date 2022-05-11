@@ -74,4 +74,11 @@ app.get("/deliver", (req, res) => {
     })
 })
 
+//ruta para vista que añade una nueva area para recibir insumos
+app.get("/add_area", (req, res) => {
+    res.render("add_areas", {
+        layout: "add_areas"
+    })
+})
+
 app.listen(port, () => console.log(`Servidor levantado en la dirección http://localhost:${port}`))

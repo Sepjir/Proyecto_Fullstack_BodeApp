@@ -1,0 +1,59 @@
+<div class="container text-center mt-3">
+    <h1>Departamentos</h1>
+    <img class="img-fluid" src="public/img/bodeapp.png" alt="BodeApp Logo" width="200" height="200">
+    <hr class="w-50 container" />
+</div>
+
+<div class="container">
+    <form action="/area" method="post">
+    <div class="row">
+        <div class="mt-3 col-8">
+            <label class="form-label">Nuevo departamento:</label>
+            <input name="area" type="text" class="form-control" required/>
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary mt-2">Agregar</button>
+    </form>
+</div>
+<div class="container mt-3">
+    <table class="table table-sm table-bordered border-primary">
+                <thead>
+                    <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nombre departamento</th>
+                    <th scope="col">¿Eliminar?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <th scope="row">1</th>
+                    <td>POLICLINICO</td>
+                    <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                    </tr>
+                    <tr>
+                    <th scope="row">2</th>
+                    <td>OFTALMOLOGÍA</td>
+                    <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                    </tr>
+                    <tr>
+                    <th scope="row">3</th>
+                    <td>TRAUMA OCULAR</td>
+                    <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                    </tr>
+                    <tr>
+                    <th scope="row">4</th>
+                    <td>SALA HOSPITALIZADOS</td>
+                    <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                    </tr>
+                    <tr>
+                    <th scope="row">5</th>
+                    <td>PABELLÓN</td>
+                    <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                    </tr>
+                </tbody>
+            </table>
+</div>
+
+<div class="container">
+    <a href="/admin"><button type="button" class="btn btn-success">Volver</button></a>
+</div>
