@@ -95,4 +95,11 @@ app.get("/add_storehouse", (req, res) => {
     })
 })
 
+//ruta para vista de reporte mensual
+app.get("/monthly", (req, res) => {
+    res.render("monthly_report", {
+        layout: "monthly_report"
+    })
+})
+
 app.listen(port, () => console.log(`Servidor levantado en la dirección http://localhost:${port}`))
