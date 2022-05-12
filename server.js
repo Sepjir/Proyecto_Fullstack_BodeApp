@@ -81,4 +81,11 @@ app.get("/add_area", (req, res) => {
     })
 })
 
+//ruta para la vista de añadi insumos a la lista general
+app.get("/add_items", (req, res) => {
+    res.render("add_items", {
+        layout: "add_items"
+    })
+})
+
 app.listen(port, () => console.log(`Servidor levantado en la dirección http://localhost:${port}`))
