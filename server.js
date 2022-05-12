@@ -88,4 +88,11 @@ app.get("/add_items", (req, res) => {
     })
 })
 
+//ruta para vista de sección para agregar bodegas
+app.get("/add_storehouse", (req, res) => {
+    res.render("add_storehouse", {
+        layout: "add_storehouse"
+    })
+})
+
 app.listen(port, () => console.log(`Servidor levantado en la dirección http://localhost:${port}`))
