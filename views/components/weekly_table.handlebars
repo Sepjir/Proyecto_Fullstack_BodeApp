@@ -1,5 +1,5 @@
 <div class="container text-center mt-2">
-    <h1>Reporte mensual</h1>
+    <h1>Reporte Semanal</h1>
     <hr class="w-50 container" />
 </div>
 
@@ -15,11 +15,20 @@
                 <option value="3">Junio</option>
             </select>
         </div>
+        <div class="mt-3 col-8">
+            <label class="form-label">Selecciona una semana:</label>
+            <select class="form-select mt-2" aria-label="Default select example" required>
+                <option selected>Selecciona una semana</option>
+                <option value="1">Semana 1</option>
+                <option value="2">Semana 2</option>
+                <option value="3">Semana 3</option>
+                <option value="4">Semana 4</option>
+            </select>
+        </div>
     </div>
         <button type="button" class="btn btn-primary mt-2">Mostrar reporte</button>
     </form>
 </div>
-
 
 <div class="container">
     <h2 class="text-center mt-2">Ingresos a Bodega</h2>
@@ -32,6 +41,7 @@
                     <th scope="col">Tipo de insumo</th>
                     <th scope="col">N° Bodega</th>
                     <th scope="col">Unidades Ingesadas</th>
+                    <th scope="col">Fecha de ingreso</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,18 +50,21 @@
                     <td>ENDOVENOSO</td>
                     <td>2</td>
                     <td>10</td>
+                    <td>05-05-2022</td>
                     </tr>
                     <tr>
                     <th scope="row">MASCARILLA VENTURI PEDIATRICA</th>
                     <td>QUIRURGICO</td>
                     <td>2</td>
                     <td>10</td>
+                    <td>06-05-2022</td>
                     </tr>
                     <tr>
                     <th scope="row">GUANTES ESTÉRILES 8.0</th>
                     <td>EPP</td>
                     <td>3</td>
                     <td>10</td>
+                    <td>010-05-2022</td>
                     </tr>
                 </tbody>
             </table>
@@ -71,6 +84,7 @@
                     <th scope="col">N° Bodega</th>
                     <th scope="col">Unidades Entegadas</th>
                     <th scope="col">Responsable</th>
+                    <th scope="col">Fecha de Salida</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -80,6 +94,7 @@
                     <td>2</td>
                     <td>10</td>
                     <td>Ignacio</td>
+                    <td>05-05-2022</td>
                     </tr>
                     <tr>
                     <th scope="row">MASCARILLA VENTURI PEDIATRICA</th>
@@ -87,6 +102,7 @@
                     <td>2</td>
                     <td>30</td>
                     <td>Yessenia</td>
+                    <td>06-05-2022</td>
                     </tr>
                     <tr>
                     <th scope="row">GUANTES ESTÉRILES 8.0</th>
@@ -94,6 +110,7 @@
                     <td>3</td>
                     <td>15</td>
                     <td>Jessica</td>
+                    <td>10-05-2022</td>
                     </tr>
                 </tbody>
             </table>
