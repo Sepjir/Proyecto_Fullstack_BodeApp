@@ -109,4 +109,11 @@ app.get("/weekly", (req, res) => {
     })
 })
 
+//ruta para vista de reporte diario
+app.get("/daily", (req, res) => {
+    res.render("daily_report", {
+        layout: "daily_report"
+    })
+})
+
 app.listen(port, () => console.log(`Servidor levantado en la dirección http://localhost:${port}`))
