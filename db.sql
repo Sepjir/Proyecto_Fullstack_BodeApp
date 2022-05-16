@@ -8,7 +8,7 @@ CREATE TABLE usuarios (
     id_tipo_usuario INT NOT NULL,
     nombre VARCHAR(255) NOT NULL,
     apellido VARCHAR(255) NOT NULL,
-    mail VARCHAR(255) NOT NULL,
+    mail VARCHAR(255) UNIQUE NOT NULL,
     contrasena VARCHAR(255) NOT NULL,
     FOREIGN KEY(id_tipo_usuario) REFERENCES tipo_de_usuario(id_tipo_usuario)
 );

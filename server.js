@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
-const {get_insumos, get_bodegas} = require("./querys")
+const {get_insumos, get_bodegas, add_user} = require("./querys")
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -38,6 +38,19 @@ app.get("/signon", (_, res) => {
     res.render("signon", {
         layout: "signon"
     })    
+})
+
+//ruta que registra efectivamente a los usuarios con metodo post
+app.post("/adduser", async (req, res) => {
+    const {email, name, lastname, password, password2} = req.body
+    const idType = 2
+    console.log(email, name, lastname, password,idType)
+    if (password == password2) {
+        await add_user(idType, name, lastname, email, password)
+        res.send(`<script>alert("El usuario ha sido creado éxitosamente"); window.location.href = "/signon"</script>`)
+    } else {
+        res.send(`<script>alert("Las contraseñas no coinciden"); window.location.href = "/signon"</script>`)
+    }
 })
 
 //ruta para vista de administrador
