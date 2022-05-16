@@ -26,7 +26,8 @@ CREATE TABLE insumo (
 );
 
 CREATE TABLE bodegas (
-    id_bodega SERIAL PRIMARY KEY
+    id_bodega SERIAL PRIMARY KEY,
+    nombre_bodega VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE area (

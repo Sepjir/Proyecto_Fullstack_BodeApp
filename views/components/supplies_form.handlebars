@@ -9,10 +9,21 @@
         <label class="form-label">Busca un insumo:</label>
         <input class="form-control" list="datalistOptions" name="name">
             <datalist id="datalistOptions">
-            <option value="BRANULA 16G"></option>
-            <option value="MASCARILLA VENTURI PEDIATRICA"></option>
-            <option value="GUANTES ESTÉRILES 8.0"></option>
+            {{#each insumos}}
+            <option value="{{this.nombre_de_insumo}}"></option>
+            {{/each}}
             </datalist>
+        </div>
+    </div>
+    <div class="row">
+        <div class="mt-3 col-8">
+        <label class="form-label">Bodega donde se almacena:</label>
+        <select class="form-select" aria-label="Default select example">
+            <option selected>Selecciona una bodega</option>
+            {{#each bodegas}}
+            <option value="{{this.id_bodega}}">{{this.nombre_bodega}}</option>
+            {{/each}}
+            </select>
         </div>
     </div>
     <div class="row">

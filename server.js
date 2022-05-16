@@ -2,6 +2,7 @@ const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
+const {get_insumos, get_bodegas} = require("./querys")
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -61,9 +62,13 @@ app.get("/storekeeper", (_, res) => {
 })
 
 //ruta vista para ingresar mercadería a la bodega
-app.get("/reception", (_, res) => {
+app.get("/reception", async (_, res) => {
+    const insumos = await get_insumos()
+    const bodegas = await get_bodegas()
     res.render("reception", {
-        layout: "reception"
+        layout: "reception",
+        insumos,
+        bodegas
     })
 })
 
