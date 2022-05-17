@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
-const {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area} = require("./querys")
+const {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area, get_tipo_insumos, get_tipo_insumos_and_name, add_insumo} = require("./querys")
 const jwt = require("jsonwebtoken")
 const {key} = require("./jwt/key")
 
@@ -152,10 +152,22 @@ app.get("/delete_area/:id", async(req, res) => {
 
 
 //ruta para la vista de añadir insumos a la lista general
-app.get("/add_items", (req, res) => {
+app.get("/add_items", async(req, res) => {
+    const insumos = await get_tipo_insumos_and_name()
+    const tipoInsumo = await get_tipo_insumos()
     res.render("add_items", {
-        layout: "add_items"
+        layout: "add_items",
+        insumos,
+        tipoInsumo
     })
+})
+
+//ruta post para añadir un insumo a la lista general
+app.post("/add_item", async (req, res) => {
+    const {item, type} = req.body
+    const itemUppercase = item.toUpperCase()
+    await add_insumo(type, itemUppercase)
+    res.send(`<script>alert("El insumo '${itemUppercase}' se ha añadido exitosamente"); window.location.href = "/add_items"</script>`)
 })
 
 //ruta para vista de sección para agregar bodegas

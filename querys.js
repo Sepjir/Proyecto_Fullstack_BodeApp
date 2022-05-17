@@ -15,6 +15,38 @@ async function get_insumos() {
     }
 }
 
+//consulta para obtener tipo de insumo
+async function get_tipo_insumos() {
+    try {
+        const result = await pool.query("SELECT * FROM tipo_de_insumo ORDER BY id_tipo_insumo")
+        return result.rows
+    } catch (e) {
+        return e
+    }
+}
+
+//consulta INNER JOIN para obtener los insumos y su tipo
+async function get_tipo_insumos_and_name() {
+    try {
+        const result = await pool.query("SELECT * FROM insumo INNER JOIN tipo_de_insumo ON insumo.id_tipo_insumo = tipo_de_insumo.id_tipo_insumo ORDER BY id_insumo;")
+        return result.rows
+    } catch (e) {
+        return e
+    }
+}
+
+// consulta para agregar nuevos insumos a la lista general
+async function add_insumo(type, name) {
+    try {
+        const result = await pool.query("INSERT INTO insumo (id_tipo_insumo ,nombre_de_insumo) VALUES ($1, $2) RETURNING*;",
+        [`${type}`, `${name}`]
+        )
+        return result.rows
+    } catch (e) {
+        return e
+    }
+}
+
 //consulta para obtener las bodegas
 async function get_bodegas() {
     try {
@@ -93,6 +125,7 @@ async function add_area(area) {
     }
 }
 
+//consulta para borrar departamentos
 async function delete_area(id) {
     try {
         const result = await pool.query("DELETE FROM area WHERE id_area=$1 RETURNING*;",
@@ -106,4 +139,4 @@ async function delete_area(id) {
 
 
 
-module.exports = {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area}
+module.exports = {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area, get_tipo_insumos, get_tipo_insumos_and_name, add_insumo}
