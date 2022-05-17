@@ -25,6 +25,30 @@ async function get_bodegas() {
     }
 }
 
+//consulta para agregar una bodega nueva
+async function add_bodega(name) {
+    try {
+        const result = await pool.query("INSERT INTO bodegas (nombre_bodega) VALUES ($1) RETURNING*;",
+        [`${name}`]
+        )
+        return result.rows
+    } catch (e) {
+        return e
+    }
+}
+
+//consulta para borrar bodegas
+async function delete_bodega(id) {
+    try {
+        const result = await pool.query("DELETE FROM bodegas WHERE id_bodega=$1 RETURNING*;",
+        [`${id}`]
+        )
+        return result.rows
+    } catch (e) {
+        return e
+    }
+}
+
 //consulta para obtener datos de la tabla usuarios
 async function get_users() {
     try {
@@ -48,4 +72,6 @@ async function add_user(type_user, name, lastname, email, password) {
 }
 
 
-module.exports = {get_insumos, get_bodegas, add_user, get_users}
+
+
+module.exports = {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega}

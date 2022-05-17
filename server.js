@@ -2,10 +2,9 @@ const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
-const {get_insumos, get_bodegas, add_user, get_users} = require("./querys")
+const {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega} = require("./querys")
 const jwt = require("jsonwebtoken")
 const {key} = require("./jwt/key")
-const { resetWatchers } = require("nodemon/lib/monitor/watch")
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -135,7 +134,7 @@ app.get("/add_area", (req, res) => {
     })
 })
 
-//ruta para la vista de añadi insumos a la lista general
+//ruta para la vista de añadir insumos a la lista general
 app.get("/add_items", (req, res) => {
     res.render("add_items", {
         layout: "add_items"
@@ -143,10 +142,25 @@ app.get("/add_items", (req, res) => {
 })
 
 //ruta para vista de sección para agregar bodegas
-app.get("/add_storehouse", (req, res) => {
+app.get("/add_storehouse", async (req, res) => {
+    const bodegas = await get_bodegas()
     res.render("add_storehouse", {
-        layout: "add_storehouse"
+        layout: "add_storehouse",
+        bodegas
     })
+})
+
+//ruta para agregar bodegas
+app.post("/add_storehouses", async (req, res) =>{
+    const {area} = req.body
+    await add_bodega(area)
+    res.send(`<script>alert("La bodega '${area}' se ha añadido exitosamente"); window.location.href = "/add_storehouse"</script>`)
+})
+
+app.get("/delete_storehouse/:id", async(req, res) =>{
+    const {id} = req.params
+    await delete_bodega(id)
+    res.send(`<script>alert("La bodega con id '${id}' se ha borrado exitosamente"); window.location.href = "/add_storehouse"</script>`)
 })
 
 //ruta para vista de reporte mensual
