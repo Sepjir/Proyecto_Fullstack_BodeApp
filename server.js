@@ -2,7 +2,10 @@ const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
-const {get_insumos, get_bodegas, add_user} = require("./querys")
+const {get_insumos, get_bodegas, add_user, get_users} = require("./querys")
+const jwt = require("jsonwebtoken")
+const {key} = require("./jwt/key")
+const { resetWatchers } = require("nodemon/lib/monitor/watch")
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -33,6 +36,30 @@ app.get("/login", (_, res) => {
     })
 })
 
+//ruta para identificar a los usuarios con JWT
+app.get("/verifylogin", async (req, res) => {
+    const {email, contrasena} = req.query
+    const users = await get_users()
+    const auth = users.find((s) => s.mail == email && s.contrasena == contrasena)
+    if (!auth) {
+        return res.status(401).send(`<script>alert("Email y/o contraseña no válidos"); window.location.href = "/login"</script>`)
+    }if (auth.id_tipo_usuario == 2) {
+        const token = jwt.sign({
+            exp: Math.floor(Date.now()/ 1000) + 28800,
+            data: auth
+        }, key)
+        return res.send(`<script>alert("Bienvenido ${auth.nombre}, serás redirigido al control de inventario..."); window.location.href = "/storekeeper?token=${token}"</script>`)
+    }if (auth.id_tipo_usuario == 1) {
+        const token = jwt.sign({
+            exp: Math.floor(Date.now()/ 1000) + 28800,
+            data: auth
+        }, key)
+        return res.send(`<script>alert("Bienvenido administrador, serás redirigido al control maestro"); window.location.href = "/admin?token=${token}"</script>`)
+    }if (auth.id_tipo_usuario == 3) {
+        return res.send(`<script>alert("Lo siento ${auth.nombre}, actualmente no tienes autorización"); window.location.href = "/login"</script>`)
+    }
+})
+
 //ruta para registrar usuarios
 app.get("/signon", (_, res) => {
     res.render("signon", {
@@ -43,13 +70,13 @@ app.get("/signon", (_, res) => {
 //ruta que registra efectivamente a los usuarios con metodo post
 app.post("/adduser", async (req, res) => {
     const {email, name, lastname, password, password2} = req.body
-    const idType = 2
+    const idType = 3
     console.log(email, name, lastname, password,idType)
     if (password == password2) {
         await add_user(idType, name, lastname, email, password)
-        res.send(`<script>alert("El usuario ha sido creado éxitosamente"); window.location.href = "/signon"</script>`)
+        res.send(`<script>alert("El usuario ha sido creado éxitosamente"); window.location.href = "/"</script>`)
     } else {
-        res.send(`<script>alert("Las contraseñas no coinciden"); window.location.href = "/signon"</script>`)
+        res.send(`<script>alert("Las contraseñas no coinciden. Vuelva a intentarlo"); window.location.href = "/signon"</script>`)
     }
 })
 
@@ -67,10 +94,19 @@ app.get("/stock", (_, res) => {
     })
 })
 
-//ruta para vista como bodeguero
-app.get("/storekeeper", (_, res) => {
-    res.render("store_keeper", {
-        layout: "store_keeper"
+//ruta para vista como bodeguero autentificando el token
+app.get("/storekeeper", (req, res) => {
+    const {token} = req.query
+    jwt.verify(token, key, (err, decoded) =>{
+        if (!decoded) {
+            return res.status(401).send(`<script>alert("No estás autorizado"); window.location.href = "/login"</script>`)
+        }
+        if (decoded.data.id_tipo_usuario == 2) {
+            res.render("store_keeper", {
+                layout: "store_keeper",
+                token
+            }) 
+        }
     })
 })
 

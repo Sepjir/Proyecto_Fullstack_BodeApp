@@ -25,6 +25,16 @@ async function get_bodegas() {
     }
 }
 
+//consulta para obtener datos de la tabla usuarios
+async function get_users() {
+    try {
+        const result = await pool.query("SELECT * FROM usuarios;")
+        return result.rows
+    } catch (e) {
+        
+    }
+}
+
 //consulta para registrar usuarios en la tabla usuarios
 async function add_user(type_user, name, lastname, email, password) {
     try {
@@ -38,4 +48,4 @@ async function add_user(type_user, name, lastname, email, password) {
 }
 
 
-module.exports = {get_insumos, get_bodegas, add_user}
+module.exports = {get_insumos, get_bodegas, add_user, get_users}
