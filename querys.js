@@ -71,7 +71,39 @@ async function add_user(type_user, name, lastname, email, password) {
     }
 }
 
+//consulta para obtener datos de departamentos
+async function get_areas() {
+    try {
+        const result = await pool.query("SELECT * FROM area;")
+        return result.rows
+    } catch (e) {
+        
+    }
+}
+
+//consulta para añadir nuevos departamentos
+async function add_area(area) {
+    try {
+        const result = await pool.query("INSERT INTO area (nombre_area) VALUES ($1) RETURNING*;",
+        [`${area}`]
+        )
+        return result.rows
+    } catch (e) {
+        return e
+    }
+}
+
+async function delete_area(id) {
+    try {
+        const result = await pool.query("DELETE FROM area WHERE id_area=$1 RETURNING*;",
+        [`${id}`]
+        )
+        return result.rows
+    } catch (e) {
+        return e
+    }
+}
 
 
 
-module.exports = {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega}
+module.exports = {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area}

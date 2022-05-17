@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
-const {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega} = require("./querys")
+const {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area} = require("./querys")
 const jwt = require("jsonwebtoken")
 const {key} = require("./jwt/key")
 
@@ -127,12 +127,29 @@ app.get("/deliver", (req, res) => {
     })
 })
 
-//ruta para vista que añade una nueva area para recibir insumos
-app.get("/add_area", (req, res) => {
+//ruta para vista que añade una nueva area/departamento
+app.get("/add_area", async(req, res) => {
+    const areas = await get_areas()
     res.render("add_areas", {
-        layout: "add_areas"
+        layout: "add_areas",
+        areas
     })
 })
+
+//ruta post para añadir un nuevo departamento
+app.post("/add_area", async(req, res) => {
+    const {area} = req.body
+    await add_area(area)
+    res.send(`<script>alert("La bodega '${area}' se ha añadido exitosamente"); window.location.href = "/add_area"</script>`)
+})
+
+app.get("/delete_area/:id", async(req, res) => {
+    const {id} = req.params
+    await delete_area(id)
+    res.send(`<script>alert("El departamento con id '${id}' se ha eliminado exitosamente"); window.location.href = "/add_area"</script>`)
+})
+
+
 
 //ruta para la vista de añadir insumos a la lista general
 app.get("/add_items", (req, res) => {
@@ -152,9 +169,9 @@ app.get("/add_storehouse", async (req, res) => {
 
 //ruta para agregar bodegas
 app.post("/add_storehouses", async (req, res) =>{
-    const {area} = req.body
+    const {bodega} = req.body
     await add_bodega(area)
-    res.send(`<script>alert("La bodega '${area}' se ha añadido exitosamente"); window.location.href = "/add_storehouse"</script>`)
+    res.send(`<script>alert("La bodega '${bodega}' se ha añadido exitosamente"); window.location.href = "/add_storehouse"</script>`)
 })
 
 app.get("/delete_storehouse/:id", async(req, res) =>{
