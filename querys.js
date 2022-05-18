@@ -137,6 +137,18 @@ async function delete_area(id) {
     }
 }
 
+//consulta para añadir ingresos a la tabla ingresos
+async function add_supply(id_insumo, id_tipo_insumo, id_bodega, unidades, fecha) {
+    try {
+        const result = await pool.query("INSERT INTO ingresos (id_insumo, id_tipo_insumo, id_bodega, unidades_ingresadas, fecha_de_ingreso) VALUES ($1, $2, $3, $4, $5) RETURNING*;",
+        [`${id_insumo}`, `${id_tipo_insumo}`, `${id_bodega}`, `${unidades}`, `${fecha}`]
+        )
+        return result.rows
+    } catch (e) {
+        return e
+    }
+}
 
 
-module.exports = {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area, get_tipo_insumos, get_tipo_insumos_and_name, add_insumo}
+
+module.exports = {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area, get_tipo_insumos, get_tipo_insumos_and_name, add_insumo, add_supply}

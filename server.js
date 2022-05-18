@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
-const {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area, get_tipo_insumos, get_tipo_insumos_and_name, add_insumo} = require("./querys")
+const {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area, get_tipo_insumos, get_tipo_insumos_and_name, add_insumo, add_supply} = require("./querys")
 const jwt = require("jsonwebtoken")
 const {key} = require("./jwt/key")
 
@@ -79,11 +79,20 @@ app.post("/adduser", async (req, res) => {
     }
 })
 
-//ruta para vista de administrador
-app.get("/admin", (_, res) => {
-    res.render("admin", {
-        layout: "admin"
+//ruta para vista de administrador verificado con JWT
+app.get("/admin", (req, res) => {
+    const {token} = req.query
+    jwt.verify(token, key, (err, decoded) =>{
+        if (!decoded) {
+            return res.status(401).send(`<script>alert("No estás autorizado"); window.location.href = "/login"</script>`)
+        }
+        if (decoded.data.id_tipo_usuario == 1) {
+            res.render("admin", {
+                layout: "admin"
+            })
+        }
     })
+    
 })
 
 //ruta para vista de stock
@@ -102,8 +111,7 @@ app.get("/storekeeper", (req, res) => {
         }
         if (decoded.data.id_tipo_usuario == 2) {
             res.render("store_keeper", {
-                layout: "store_keeper",
-                token
+                layout: "store_keeper"
             }) 
         }
     })
@@ -120,10 +128,23 @@ app.get("/reception", async (_, res) => {
     })
 })
 
+//ruta con metodo post para ingresar mercadería a las bodegas
+app.post("/add_stock", async (req, res) => {
+    const {name, storehouse, units, date} = req.body
+    const nameAndType = await get_tipo_insumos_and_name()
+    const storehouseName = await get_bodegas()
+    const findId = nameAndType.find((i) => name == i.nombre_de_insumo)
+    const findStorehouse = storehouseName.find((s) => storehouse == s.id_bodega)
+    await add_supply(findId.id_insumo, findId.id_tipo_insumo, storehouse, units, date)
+    res.send(`<script>alert("Se han ingresado a la bodega '${findStorehouse.nombre_bodega}' ${units} unidades de '${name}' de forma exitosa"); window.location.href = "/reception"</script>`)
+})
+
 //ruta para vista de entrega de insumos
-app.get("/deliver", (req, res) => {
+app.get("/deliver", async (req, res) => {
     res.render("deliver" ,{
-        layout: "deliver"
+        layout: "deliver",
+        insumos,
+        bodegas
     })
 })
 
@@ -139,8 +160,9 @@ app.get("/add_area", async(req, res) => {
 //ruta post para añadir un nuevo departamento
 app.post("/add_area", async(req, res) => {
     const {area} = req.body
-    await add_area(area)
-    res.send(`<script>alert("La bodega '${area}' se ha añadido exitosamente"); window.location.href = "/add_area"</script>`)
+    const areaUpperCase = area.toUpperCase()
+    await add_area(areaUpperCase)
+    res.send(`<script>alert("El departamento '${areaUpperCase}' se ha añadido exitosamente"); window.location.href = "/add_area"</script>`)
 })
 
 app.get("/delete_area/:id", async(req, res) => {
@@ -182,8 +204,9 @@ app.get("/add_storehouse", async (req, res) => {
 //ruta para agregar bodegas
 app.post("/add_storehouses", async (req, res) =>{
     const {bodega} = req.body
-    await add_bodega(area)
-    res.send(`<script>alert("La bodega '${bodega}' se ha añadido exitosamente"); window.location.href = "/add_storehouse"</script>`)
+    const bodegaUpperCase = bodega.toUpperCase()
+    await add_bodega(bodegaUpperCase)
+    res.send(`<script>alert("La bodega '${bodegaUpperCase}' se ha añadido exitosamente"); window.location.href = "/add_storehouse"</script>`)
 })
 
 app.get("/delete_storehouse/:id", async(req, res) =>{

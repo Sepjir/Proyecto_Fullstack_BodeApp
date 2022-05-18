@@ -39,9 +39,11 @@ CREATE TABLE ingresos (
     id_ingreso SERIAL PRIMARY KEY,
     id_insumo INT NOT NULL,
     id_tipo_insumo INT NOT NULL,
+    id_bodega INT NOT NULL,
     unidades_ingresadas INT NOT NULL,
     fecha_de_ingreso DATE NOT NULL,
     FOREIGN KEY(id_insumo) REFERENCES insumo(id_insumo),
+    FOREIGN KEY(id_bodega) REFERENCES bodegas(id_bodega),
     FOREIGN KEY(id_tipo_insumo) REFERENCES tipo_de_insumo(id_tipo_insumo)
 );
 
@@ -49,11 +51,13 @@ CREATE TABLE egresos (
     id_egresos SERIAL PRIMARY KEY,
     id_insumo INT NOT NULL,
     id_tipo_insumo INT NOT NULL,
+    id_bodega INT NOT NULL,
     id_area INT NOT NULL,
     cantidad_saliente INT NOT NULL,
     persona_recibe VARCHAR(255) NOT NULL,
     fecha_egreso DATE NOT NULL,
     FOREIGN KEY(id_insumo) REFERENCES insumo(id_insumo),
+    FOREIGN KEY(id_bodega) REFERENCES bodegas(id_bodega)
     FOREIGN KEY(id_tipo_insumo) REFERENCES tipo_de_insumo(id_tipo_insumo),
     FOREIGN KEY(id_area) REFERENCES area(id_area)
 );
