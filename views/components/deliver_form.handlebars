@@ -3,15 +3,15 @@
 </div>
 <hr class="w-50 container" />
 
-<form class="container mt-4 w-55 mb-3 align-items-center" action="">
+<form class="container mt-4 w-55 mb-3 align-items-center" action="/deliver_items" method="post">
     <div class="row">
         <div class="col-10">
         <label class="form-label">Busca un insumo:</label>
-        <input class="form-control" list="datalistOptions" name="name">
+        <input class="form-control" list="datalistOptions" name="product">
             <datalist id="datalistOptions">
-            <option value="BRANULA 16G"></option>
-            <option value="MASCARILLA VENTURI PEDIATRICA"></option>
-            <option value="GUANTES ESTÉRILES 8.0"></option>
+            {{#each insumos}}
+            <option value="{{this.nombre_de_insumo}}"></option>
+            {{/each}}
             </datalist>
         </div>
     </div>
@@ -24,13 +24,11 @@
     <div class="row">
         <div class="mt-3 col-8">
         <label class="form-label">Area que recibe:</label>
-        <select class="form-select" aria-label="Default select example">
+        <select class="form-select" aria-label="Default select example" name="area">
             <option selected>Selecciona un departamento</option>
-            <option value="1">POLICLINICO</option>
-            <option value="2">OFTALMOLOGÍA</option>
-            <option value="3">TRAUMA OCULAR</option>
-            <option value="4">SALA HOSPITALIZADOS</option>
-            <option value="5">PABELLÓN</option>
+            {{#each areas}}
+            <option value="{{this.id_area}}">{{this.nombre_area}}</option>
+            {{/each}}
             </select>
         </div>
     </div>
@@ -44,7 +42,7 @@
         <label class="form-label">Fecha de Salida:</label>
         <input name="date" id="date" type="date" value="2022-05-06" required/>
     </div>
-  <button class="btn btn-primary mt-3 mb-5">Añadir a Stock</button>
+  <button class="btn btn-primary mt-3 mb-5">Entregar</button>
     <a href="/storekeeper"><button type="button" class="btn btn-primary mt-3 mb-5" >Volver</button></a>
 </form>
 <script>

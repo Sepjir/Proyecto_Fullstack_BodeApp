@@ -2,7 +2,24 @@ const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
-const {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area, get_tipo_insumos, get_tipo_insumos_and_name, add_insumo, add_supply} = require("./querys")
+
+const {
+    get_insumos,
+    get_bodegas,
+    add_user,
+    get_users,
+    add_bodega,
+    delete_bodega,
+    get_areas,
+    add_area,
+    delete_area,
+    get_tipo_insumos,
+    get_tipo_insumos_and_name,
+    add_insumo,
+    add_supply,
+    get_ingresos,
+    add_deliver} = require("./querys")
+
 const jwt = require("jsonwebtoken")
 const {key} = require("./jwt/key")
 
@@ -141,11 +158,35 @@ app.post("/add_stock", async (req, res) => {
 
 //ruta para vista de entrega de insumos
 app.get("/deliver", async (req, res) => {
+    const insumos = await get_insumos()
+    const areas = await get_areas()
     res.render("deliver" ,{
         layout: "deliver",
         insumos,
-        bodegas
+        areas
     })
+})
+
+//ruta POST para entregar insumos a departamentos
+app.post("/deliver_items", async (req, res) => {
+    const {product, units, area, name, date} = req.body
+    const areas = await get_areas()
+    storehouseName = await get_bodegas()
+    const nameAndType = await get_tipo_insumos_and_name()
+    const ingresos = await get_ingresos()
+    const findNameAndType = nameAndType.find((s) => s.nombre_de_insumo == product)
+    const findIdIngresos = ingresos.find((i) => i.id_insumo == findNameAndType.id_insumo)
+    const findNameArea = areas.find((a) => a.id_area == area)
+    const findStorehouse = storehouseName.find((store) => store.id_bodega == findIdIngresos.id_bodega)
+    if (!findIdIngresos) {
+        res.send(`<script>alert("No existe el insumo '${product}' en bodega"); window.location.href = "/deliver"</script>`)
+    }if (findIdIngresos && findIdIngresos.unidades_ingresadas < units) {
+        res.send(`<script>alert("No hay suficientes unidades de '${product}' en bodega sólo hay '${findIdIngresos.unidades_ingresadas}' unidades"); window.location.href = "/deliver"</script>`)
+    }if (findIdIngresos && findIdIngresos.unidades_ingresadas > units) {
+        await add_deliver(findNameAndType.id_insumo, findNameAndType.id_tipo_insumo, findStorehouse.id_bodega, area, units, name, date)
+        res.send(`<script>alert("Se han entregado ${units} unidades de '${product}' para el departamento de '${findNameArea.nombre_area}' y han sido retiradas por '${name}'"); window.location.href = "/deliver"</script>`)
+    }
+
 })
 
 //ruta para vista que añade una nueva area/departamento
@@ -165,6 +206,7 @@ app.post("/add_area", async(req, res) => {
     res.send(`<script>alert("El departamento '${areaUpperCase}' se ha añadido exitosamente"); window.location.href = "/add_area"</script>`)
 })
 
+//ruta para borrar un departamento
 app.get("/delete_area/:id", async(req, res) => {
     const {id} = req.params
     await delete_area(id)

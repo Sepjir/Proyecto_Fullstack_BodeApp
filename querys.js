@@ -149,6 +149,43 @@ async function add_supply(id_insumo, id_tipo_insumo, id_bodega, unidades, fecha)
     }
 }
 
+//consulta para obtener información de la tabla ingresos
+async function get_ingresos() {
+    try {
+        const result = await pool.query("SELECT * FROM ingresos;")
+        return result.rows
+    } catch (e) {
+        
+    }
+}
+
+//consulta para agregar información a la tabla egresos de mercaderia
+async function add_deliver(id_insumo, id_tipo_insumo, id_bodega, id_area, unidades, quienRetiro, fecha) {
+    try {
+        const result = await pool.query("INSERT INTO egresos (id_insumo, id_tipo_insumo, id_area, id_bodega, cantidad_saliente, persona_recibe, fecha_egreso) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING*;",
+        [`${id_insumo}`, `${id_tipo_insumo}`,`${id_area}`, `${id_bodega}`, `${unidades}`, `${quienRetiro}`, `${fecha}`]
+        )
+        return result.rows
+    } catch (e) {
+        return e
+    }
+}
 
 
-module.exports = {get_insumos, get_bodegas, add_user, get_users, add_bodega, delete_bodega, get_areas, add_area, delete_area, get_tipo_insumos, get_tipo_insumos_and_name, add_insumo, add_supply}
+
+module.exports = {
+    get_insumos,
+    get_bodegas,
+    add_user,
+    get_users,
+    add_bodega,
+    delete_bodega,
+    get_areas,
+    add_area,
+    delete_area,
+    get_tipo_insumos,
+    get_tipo_insumos_and_name,
+    add_insumo,
+    add_supply,
+    get_ingresos,
+    add_deliver}

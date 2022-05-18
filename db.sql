@@ -57,7 +57,7 @@ CREATE TABLE egresos (
     persona_recibe VARCHAR(255) NOT NULL,
     fecha_egreso DATE NOT NULL,
     FOREIGN KEY(id_insumo) REFERENCES insumo(id_insumo),
-    FOREIGN KEY(id_bodega) REFERENCES bodegas(id_bodega)
+    FOREIGN KEY(id_bodega) REFERENCES bodegas(id_bodega),
     FOREIGN KEY(id_tipo_insumo) REFERENCES tipo_de_insumo(id_tipo_insumo),
     FOREIGN KEY(id_area) REFERENCES area(id_area)
 );
