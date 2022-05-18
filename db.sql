@@ -63,7 +63,7 @@ CREATE TABLE egresos (
 );
 
 CREATE TABLE stock (
-    id_insumo INT NOT NULL,
+    id_insumo INT NOT NULL UNIQUE,
     id_tipo_insumo INT NOT NULL,
     id_bodega INT NOT NULL,
     cantidad_en_stock INT NOT NULL,

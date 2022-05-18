@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
-
+//consultas a base de datos
 const {
     get_insumos,
     get_bodegas,
@@ -18,7 +18,10 @@ const {
     add_insumo,
     add_supply,
     get_ingresos,
-    add_deliver} = require("./querys")
+    add_deliver,
+    get_stock,
+    add_stock,
+    add_units} = require("./querys")
 
 const jwt = require("jsonwebtoken")
 const {key} = require("./jwt/key")
@@ -150,10 +153,19 @@ app.post("/add_stock", async (req, res) => {
     const {name, storehouse, units, date} = req.body
     const nameAndType = await get_tipo_insumos_and_name()
     const storehouseName = await get_bodegas()
+    const stock = await get_stock()
     const findId = nameAndType.find((i) => name == i.nombre_de_insumo)
     const findStorehouse = storehouseName.find((s) => storehouse == s.id_bodega)
-    await add_supply(findId.id_insumo, findId.id_tipo_insumo, storehouse, units, date)
-    res.send(`<script>alert("Se han ingresado a la bodega '${findStorehouse.nombre_bodega}' ${units} unidades de '${name}' de forma exitosa"); window.location.href = "/reception"</script>`)
+    const findStock = stock.find((st) => st.id_insumo == findId.id_insumo)
+    if (!findStock) {
+        await add_stock(findId.id_insumo, findId.id_tipo_insumo, storehouse, units)
+        await add_supply(findId.id_insumo, findId.id_tipo_insumo, storehouse, units, date)
+        return res.send(`<script>alert("Se han ingresado a la bodega '${findStorehouse.nombre_bodega}' ${units} unidades de '${name}' de forma exitosa"); window.location.href = "/reception"</script>`)
+    }if (findStock) {
+        await add_supply(findId.id_insumo, findId.id_tipo_insumo, storehouse, units, date)
+        await add_units(findId.id_insumo, units)
+        return res.send(`<script>alert("Se han ingresado a la bodega '${findStorehouse.nombre_bodega}' ${units} unidades de '${name}' de forma exitosa"); window.location.href = "/reception"</script>`)
+    }
 })
 
 //ruta para vista de entrega de insumos
