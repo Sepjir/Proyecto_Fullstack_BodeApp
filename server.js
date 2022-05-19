@@ -24,7 +24,9 @@ const {
     add_units,
     less_units,
     reporte_fechas_egresos,
-    reporte_fechas_ingresos} = require("./querys")
+    reporte_fechas_ingresos,
+    stock_actual,
+    stock_critico} = require("./querys")
 
 const jwt = require("jsonwebtoken")
 const {key} = require("./jwt/key")
@@ -120,9 +122,13 @@ app.get("/admin", (req, res) => {
 })
 
 //ruta para vista de stock
-app.get("/stock", (_, res) => {
+app.get("/stock", async (_, res) => {
+    const stockActual = await stock_actual()
+    const stockCritico = await stock_critico()
     res.render("stock", {
-        layout: "stock"
+        layout: "stock",
+        stockActual,
+        stockCritico
     })
 })
 

@@ -15,29 +15,19 @@
                     <tr>
                     <th scope="col">Nombre Insumo</th>
                     <th scope="col">Tipo de insumo</th>
-                    <th scope="col">N° Bodega</th>
+                    <th scope="col">Bodega</th>
                     <th scope="col">Unidades</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {{#each stockActual}}
                     <tr>
-                    <th scope="row">BRANULA 16G</th>
-                    <td>ENDOVENOSO</td>
-                    <td>2</td>
-                    <td>50</td>
+                    <th scope="row">{{this.nombre_de_insumo}}</th>
+                    <td>{{this.tipo_de_insumo}}</td>
+                    <td>{{this.nombre_bodega}}</td>
+                    <td>{{this.cantidad_en_stock}}</td>
                     </tr>
-                    <tr>
-                    <th scope="row">MASCARILLA VENTURI PEDIATRICA</th>
-                    <td>QUIRURGICO</td>
-                    <td>2</td>
-                    <td>30</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">GUANTES ESTÉRILES 8.0</th>
-                    <td>EPP</td>
-                    <td>3</td>
-                    <td>100</td>
-                    </tr>
+                    {{/each}}
                 </tbody>
             </table>
         </div>
@@ -53,29 +43,19 @@
                     <tr>
                     <th scope="col">Nombre Insumo</th>
                     <th scope="col">Tipo de insumo</th>
-                    <th scope="col">N° Bodega</th>
+                    <th scope="col">Bodega</th>
                     <th scope="col">Unidades</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {{#each stockCritico}}
                     <tr>
-                    <th scope="row">BRANULA 16G</th>
-                    <td>ENDOVENOSO</td>
-                    <td>2</td>
-                    <td>0</td>
+                    <th scope="row">{{this.nombre_de_insumo}}</th>
+                    <td>{{this.tipo_de_insumo}}</td>
+                    <td>{{this.nombre_bodega}}</td>
+                    <td>{{this.cantidad_en_stock}}</td>
                     </tr>
-                    <tr>
-                    <th scope="row">MASCARILLA VENTURI PEDIATRICA</th>
-                    <td>QUIRURGICO</td>
-                    <td>2</td>
-                    <td>0</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">GUANTES ESTÉRILES 8.0</th>
-                    <td>EPP</td>
-                    <td>3</td>
-                    <td>0</td>
-                    </tr>
+                    {{/each}}
                 </tbody>
             </table>
         </div>
