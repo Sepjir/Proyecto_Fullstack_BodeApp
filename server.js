@@ -273,25 +273,21 @@ app.get("/delete_storehouse/:id", async(req, res) =>{
     res.send(`<script>alert("La bodega con id '${id}' se ha borrado exitosamente"); window.location.href = "/add_storehouse"</script>`)
 })
 
-//ruta para vista de reporte mensual
-app.get("/monthly", (req, res) => {
-    res.render("monthly_report", {
-        layout: "monthly_report"
+//ruta para vista de reporte por rango de fechas
+app.get("/reporte", (req, res) => {
+    res.render("reporte", {
+        layout: "reporte"
     })
 })
 
-//ruta para vista de reporte semanal
-app.get("/weekly", (req, res) => {
-    res.render("weekly_report", {
-        layout: "weekly_report"
+//vista para detalle del reporte de inventario
+app.get("/reporte_detalle", (req, res) =>{
+    const {fecha, fecha2} = req.query
+    console.log(fecha, fecha2)
+    res.render("detalle_reporte", {
+        layout: "detalle_reporte"
     })
 })
 
-//ruta para vista de reporte diario
-app.get("/daily", (req, res) => {
-    res.render("daily_report", {
-        layout: "daily_report"
-    })
-})
 
 app.listen(port, () => console.log(`Servidor levantado en la dirección http://localhost:${port}`))

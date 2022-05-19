@@ -1,0 +1,40 @@
+<div class="container text-center mt-2">
+    <h1>Reporte por rango de fechas</h1>
+    <hr class="w-50 container" />
+</div>
+
+<div class="container mb-5">
+    <form action="/reporte_detalle" method="get">
+        <div class="row">
+        <div class="mt-3">
+            <div>
+                <label class="form-label">Selecciona un rango de fechas</label>
+            </div>
+            <div>
+                <label class="form-label">Desde:</label>
+            </div>
+            <div>
+            <input name="fecha" id="date" type="date" value="" required/>
+            </div>
+
+            <div>
+                <label class="form-label mt-3">Hasta:</label>
+            </div>
+
+            <div>
+            <input name="fecha2" type="date" value="" required/>
+            </div>
+        </div>
+    </div>
+        <button class="btn btn-primary mt-3">Ir al reporte</button>
+    </form>
+</div>
+<div class="mb-5"></div>
+<script>
+    const date = new Date().toISOString().slice(0,10)
+    const input = document.getElementById("date")
+    const dateFunction = () => {
+        input.setAttribute("value", `${date}`)
+    }
+    dateFunction()
+</script>
