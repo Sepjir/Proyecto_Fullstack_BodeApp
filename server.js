@@ -2,6 +2,7 @@ const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
+const {rutas} = require("./rutas/rutas")
 //consultas a base de datos
 const {
     get_insumos,
@@ -49,6 +50,7 @@ app.engine("handlebars", exphbs.engine({
 
 //ruta para el index de la aplicación
 app.get("/", (_, res) => {
+    console.log(rutas)
     res.render("index", {
         layout: "index",
     })
@@ -167,11 +169,17 @@ app.post("/add_stock", async (req, res) => {
     const findId = nameAndType.find((i) => name == i.nombre_de_insumo)
     const findStorehouse = storehouseName.find((s) => storehouse == s.id_bodega)
     const findStock = stock.find((st) => st.id_insumo == findId.id_insumo)
+    console.log(findStock)
+    console.log(storehouse)
     if (!findStock) {
         await add_stock(findId.id_insumo, findId.id_tipo_insumo, storehouse, units)
         await add_supply(findId.id_insumo, findId.id_tipo_insumo, storehouse, units, date)
         return res.send(`<script>alert("Se han ingresado a la bodega '${findStorehouse.nombre_bodega}' ${units} unidades de '${name}' de forma exitosa"); window.location.href = "/reception"</script>`)
-    }if (findStock) {
+    }
+    if (findStock.id_bodega != storehouse) {
+        return res.send(`<script>alert("La bodega para el insumo '${name}' es la BODEGA ${findStock.id_bodega} y haz elegido la BODEGA ${storehouse}, vuelve a intentarlo"); window.location.href = "/reception"</script>`)
+    }
+    if (findStock) {
         await add_supply(findId.id_insumo, findId.id_tipo_insumo, storehouse, units, date)
         await add_units(findId.id_insumo, units)
         return res.send(`<script>alert("Se han ingresado a la bodega '${findStorehouse.nombre_bodega}' ${units} unidades de '${name}' de forma exitosa"); window.location.href = "/reception"</script>`)
@@ -283,14 +291,14 @@ app.get("/delete_storehouse/:id", async(req, res) =>{
 })
 
 //ruta para vista de reporte por rango de fechas
-app.get("/reporte", (req, res) => {
+app.get(rutas.formularioReporte, (req, res) => {
     res.render("reporte", {
         layout: "reporte"
     })
 })
 
 //vista para detalle del reporte de inventario
-app.get("/reporte_detalle", async (req, res) =>{
+app.get(rutas.reporteEnDetalle, async (req, res) =>{
     const {fecha, fecha2} = req.query
     const ingresosPorFecha = await reporte_fechas_ingresos(fecha, fecha2)
     const egresosPorFecha = await reporte_fechas_egresos(fecha, fecha2)
