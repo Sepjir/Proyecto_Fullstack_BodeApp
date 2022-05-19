@@ -169,8 +169,6 @@ app.post("/add_stock", async (req, res) => {
     const findId = nameAndType.find((i) => name == i.nombre_de_insumo)
     const findStorehouse = storehouseName.find((s) => storehouse == s.id_bodega)
     const findStock = stock.find((st) => st.id_insumo == findId.id_insumo)
-    console.log(findStock)
-    console.log(storehouse)
     if (!findStock) {
         await add_stock(findId.id_insumo, findId.id_tipo_insumo, storehouse, units)
         await add_supply(findId.id_insumo, findId.id_tipo_insumo, storehouse, units, date)
