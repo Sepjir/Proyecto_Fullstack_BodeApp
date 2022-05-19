@@ -21,7 +21,8 @@ const {
     add_deliver,
     get_stock,
     add_stock,
-    add_units} = require("./querys")
+    add_units,
+    less_units} = require("./querys")
 
 const jwt = require("jsonwebtoken")
 const {key} = require("./jwt/key")
@@ -186,16 +187,19 @@ app.post("/deliver_items", async (req, res) => {
     storehouseName = await get_bodegas()
     const nameAndType = await get_tipo_insumos_and_name()
     const ingresos = await get_ingresos()
+    const stock = await get_stock()
     const findNameAndType = nameAndType.find((s) => s.nombre_de_insumo == product)
     const findIdIngresos = ingresos.find((i) => i.id_insumo == findNameAndType.id_insumo)
     const findNameArea = areas.find((a) => a.id_area == area)
+    const findStock = stock.find((st) => st.id_insumo == findIdIngresos.id_insumo)
     const findStorehouse = storehouseName.find((store) => store.id_bodega == findIdIngresos.id_bodega)
-    if (!findIdIngresos) {
+    if (!findStock) {
         res.send(`<script>alert("No existe el insumo '${product}' en bodega"); window.location.href = "/deliver"</script>`)
-    }if (findIdIngresos && findIdIngresos.unidades_ingresadas < units) {
+    }if (findStock && findStock.cantidad_en_stock < units) {
         res.send(`<script>alert("No hay suficientes unidades de '${product}' en bodega sólo hay '${findIdIngresos.unidades_ingresadas}' unidades"); window.location.href = "/deliver"</script>`)
-    }if (findIdIngresos && findIdIngresos.unidades_ingresadas > units) {
+    }if (findStock && findStock.cantidad_en_stock > units) {
         await add_deliver(findNameAndType.id_insumo, findNameAndType.id_tipo_insumo, findStorehouse.id_bodega, area, units, name, date)
+        await less_units(findNameAndType.id_insumo,units)
         res.send(`<script>alert("Se han entregado ${units} unidades de '${product}' para el departamento de '${findNameArea.nombre_area}' y han sido retiradas por '${name}'"); window.location.href = "/deliver"</script>`)
     }
 

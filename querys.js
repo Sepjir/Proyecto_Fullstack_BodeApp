@@ -205,6 +205,18 @@ async function add_units(id_insumo, cantidad_en_stock) {
     }
 }
 
+//transaccion: reducción de unidades en stock
+async function less_units(id_insumo, cantidad_en_stock) {
+    try {
+        const result = await pool.query("UPDATE stock SET cantidad_en_stock = cantidad_en_stock - $2 WHERE id_insumo = $1 RETURNING*;",
+        [`${id_insumo}`, `${cantidad_en_stock}`]
+        )
+        return result.rows
+    } catch (e) {
+        return e
+    }
+}
+
 
 module.exports = {
     get_insumos,
@@ -224,4 +236,5 @@ module.exports = {
     add_deliver,
     get_stock,
     add_stock,
-    add_units}
+    add_units,
+    less_units}

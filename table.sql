@@ -23,10 +23,9 @@ INSERT INTO bodegas (nombre_bodega) VALUES ('BODEGA 5');
 
 -- Poblando tabla areas / departamentos
 INSERT INTO area (nombre_area) VALUES ('POLICLINICO');
-INSERT INTO area (nombre_area) VALUES ('OFTALMOLOGÍA');
 INSERT INTO area (nombre_area) VALUES ('TRAUMA OCULAR');
 INSERT INTO area (nombre_area) VALUES ('SALA HOSPITALIZADOS');
-INSERT INTO area (nombre_area) VALUES ('PABELLÓN');
+INSERT INTO area (nombre_area) VALUES ('PABELLON');
 
 -- Poblando tabla insumos
 INSERT INTO insumo (id_tipo_insumo, nombre_de_insumo) VALUES (	1,'FIBRA DE CHANDELIER'	);
