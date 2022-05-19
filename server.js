@@ -22,10 +22,13 @@ const {
     get_stock,
     add_stock,
     add_units,
-    less_units} = require("./querys")
+    less_units,
+    reporte_fechas_egresos,
+    reporte_fechas_ingresos} = require("./querys")
 
 const jwt = require("jsonwebtoken")
 const {key} = require("./jwt/key")
+const moment = require("moment")
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -281,11 +284,14 @@ app.get("/reporte", (req, res) => {
 })
 
 //vista para detalle del reporte de inventario
-app.get("/reporte_detalle", (req, res) =>{
+app.get("/reporte_detalle", async (req, res) =>{
     const {fecha, fecha2} = req.query
-    console.log(fecha, fecha2)
+    const ingresosPorFecha = await reporte_fechas_ingresos(fecha, fecha2)
+    const egresosPorFecha = await reporte_fechas_egresos(fecha, fecha2)
     res.render("detalle_reporte", {
-        layout: "detalle_reporte"
+        layout: "detalle_reporte",
+        ingresosPorFecha,
+        egresosPorFecha
     })
 })
 

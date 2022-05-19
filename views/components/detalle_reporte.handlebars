@@ -12,31 +12,25 @@
             <table class="table table-sm table-bordered border-primary mt-2 container">
                 <thead>
                     <tr>
+                    <th scope="col">Id ingreso</th>
                     <th scope="col">Nombre Insumo</th>
                     <th scope="col">Tipo de insumo</th>
-                    <th scope="col">N° Bodega</th>
+                    <th scope="col">Bodega</th>
                     <th scope="col">Unidades Ingesadas</th>
+                    <th scope="col">Fecha de ingreso</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {{#each ingresosPorFecha}}
                     <tr>
-                    <th scope="row">BRANULA 16G</th>
-                    <td>ENDOVENOSO</td>
-                    <td>2</td>
-                    <td>10</td>
+                    <th scope="row">{{this.id_ingreso}}</th>
+                    <th>{{this.nombre_de_insumo}}</th>
+                    <td>{{this.tipo_de_insumo}}</td>
+                    <td>{{this.nombre_bodega}}</td>
+                    <td>{{this.unidades_ingresadas}}</td>
+                    <td>{{this.to_char}}</td>
                     </tr>
-                    <tr>
-                    <th scope="row">MASCARILLA VENTURI PEDIATRICA</th>
-                    <td>QUIRURGICO</td>
-                    <td>2</td>
-                    <td>10</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">GUANTES ESTÉRILES 8.0</th>
-                    <td>EPP</td>
-                    <td>3</td>
-                    <td>10</td>
-                    </tr>
+                    {{/each}}
                 </tbody>
             </table>
         </div>
@@ -50,35 +44,29 @@
             <table class="table table-sm table-bordered border-danger mt-2 container">
                 <thead>
                     <tr>
+                    <th scope="col">Id egreso</th>
                     <th scope="col">Nombre Insumo</th>
                     <th scope="col">Tipo de insumo</th>
-                    <th scope="col">N° Bodega</th>
+                    <th scope="col">Bodega</th>
                     <th scope="col">Unidades Entegadas</th>
+                    <th scope="col">Departamento</th>
                     <th scope="col">Responsable</th>
+                    <th scope="col">Fecha de entrega</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {{#each egresosPorFecha}}
                     <tr>
-                    <th scope="row">BRANULA 16G</th>
-                    <td>ENDOVENOSO</td>
-                    <td>2</td>
-                    <td>10</td>
-                    <td>Ignacio</td>
+                    <th scope="row">{{this.id_egresos}}</th>
+                    <th>{{this.nombre_de_insumo}}</th>
+                    <td>{{this.tipo_de_insumo}}</td>
+                    <td>{{this.nombre_bodega}}</td>
+                    <td>{{this.cantidad_saliente}}</td>
+                    <td>{{this.nombre_area}}</td>
+                    <td>{{this.persona_recibe}}</td>
+                    <td>{{this.to_char}}</td>
                     </tr>
-                    <tr>
-                    <th scope="row">MASCARILLA VENTURI PEDIATRICA</th>
-                    <td>QUIRURGICO</td>
-                    <td>2</td>
-                    <td>30</td>
-                    <td>Yessenia</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">GUANTES ESTÉRILES 8.0</th>
-                    <td>EPP</td>
-                    <td>3</td>
-                    <td>15</td>
-                    <td>Jessica</td>
-                    </tr>
+                    {{/each}}
                 </tbody>
             </table>
         </div>
