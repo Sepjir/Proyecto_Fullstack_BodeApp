@@ -151,7 +151,7 @@ app.get("/storekeeper", (req, res) => {
 //ruta vista para ingresar mercadería a la bodega
 app.get("/reception", async (_, res) => {
     const insumos = await get_insumos()
-    const bodegas = await get_bodegas()
+    const bodegas = await obtener_bodegas()
     res.render("reception", {
         layout: "reception",
         insumos,
@@ -163,7 +163,7 @@ app.get("/reception", async (_, res) => {
 app.post("/add_stock", async (req, res) => {
     const {name, storehouse, units, date} = req.body
     const nameAndType = await get_tipo_insumos_and_name()
-    const storehouseName = await get_bodegas()
+    const storehouseName = await obtener_bodegas()
     const stock = await get_stock()
     const findId = nameAndType.find((i) => name == i.nombre_de_insumo)
     const findStorehouse = storehouseName.find((s) => storehouse == s.id_bodega)
@@ -198,7 +198,7 @@ app.get("/deliver", async (req, res) => {
 app.post("/deliver_items", async (req, res) => {
     const {product, units, area, name, date} = req.body
     const areas = await get_areas()
-    storehouseName = await get_bodegas()
+    storehouseName = await obtener_bodegas()
     const nameAndType = await get_tipo_insumos_and_name()
     const ingresos = await get_ingresos()
     const stock = await get_stock()
@@ -243,8 +243,6 @@ app.get("/delete_area/:id", async(req, res) => {
     res.send(`<script>alert("El departamento con id '${id}' se ha eliminado exitosamente"); window.location.href = "/add_area"</script>`)
 })
 
-
-
 //ruta para la vista de añadir insumos a la lista general
 app.get("/add_items", async(req, res) => {
     const insumos = await get_tipo_insumos_and_name()
@@ -284,7 +282,7 @@ app.post(rutas.agregarBodegas, async (req, res) =>{
 //ruta para borrar una bodega
 app.get(rutas.borrarBodega, async(req, res) =>{
     const {id} = req.params
-    await delete_bodega(id)
+    await borrar_bodega(id)
     res.send(`<script>alert("La bodega con id '${id}' se ha borrado exitosamente"); window.location.href = "/add_storehouse"</script>`)
 })
 

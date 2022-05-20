@@ -3,7 +3,7 @@
     <hr class="w-50 container" />
 </div>
 <div class="container">
-    <form action="/add_storehouses" method="post">
+    <form action="/agregar_bodegas" method="post">
     <div class="row">
         <div class="mt-3 col-8">
             <label class="form-label">Nueva bodega:</label>
@@ -27,7 +27,7 @@
                     <tr>
                     <th scope="row">{{this.id_bodega}}</th>
                     <td>{{this.nombre_bodega}}</td>
-                    <td><a href="/delete_storehouse/{{this.id_bodega}}"><button type="button" class="btn btn-danger">Eliminar</button></a></td>
+                    <td><a href="/borrar_bodega/{{this.id_bodega}}"><button type="button" class="btn btn-danger">Eliminar</button></a></td>
                     </tr>
                     {{/each}}
                 </tbody>
