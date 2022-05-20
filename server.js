@@ -1,39 +1,24 @@
+//Express, rutas y handlebars
 const express = require("express")
 const app = express()
 const port = 3000
 const exphbs = require("express-handlebars")
 const {rutas} = require("./rutas/rutas")
-//consultas a base de datos
-const {
-    obtener_insumos,
-    obtener_bodegas,
-    agregar_usuario,
-    get_users,
-    modificar_permiso_usuario,
-    agregar_bodega,
-    borrar_bodega,
-    obtener_areas,
-    agregar_area,
-    borrar_area,
-    obtener_tipo_insumos,
-    obtener_tipo_insumos_y_nombre,
-    add_insumo,
-    add_supply,
-    obtener_ingresos,
-    agregar_entrega,
-    obtener_stock,
-    add_stock,
-    add_units,
-    descontar_unidades,
-    reporte_fechas_egresos,
-    reporte_fechas_ingresos,
-    stock_actual,
-    stock_critico} = require("./querys")
 
+//consultas a base de datos
+const {obtener_insumos, obtener_tipo_insumos, obtener_tipo_insumos_y_nombre, add_insumo} = require("./querys/insumos")
+const {obtener_bodegas, agregar_bodega, borrar_bodega} = require("./querys/bodegas")
+const {obtener_usuarios, agregar_usuario, modificar_permiso_usuario} = require("./querys/usuarios")
+const {obtener_areas, agregar_area, borrar_area} = require("./querys/area")
+const {agregar_insumo, obtener_ingresos,agregar_entrega} = require("./querys/ingreso_egreso")
+const {agregar_stock, obtener_stock, agregar_unidades, descontar_unidades} = require("./querys/stock")
+const {reporte_fechas_egresos, reporte_fechas_ingresos, stock_actual, stock_critico} = require("./querys/reportes")
+
+//JsonWebToken y llave
 const jwt = require("jsonwebtoken")
 const {llave} = require("./jwt/llave")
-const moment = require("moment")
 
+//configuración para extraer del body informacion
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
@@ -66,7 +51,7 @@ app.get(rutas.ingreso, (req, res) => {
 //ruta para identificar a los usuarios con JWT
 app.get(rutas.verificar, async (req, res) => {
     const {email, contrasena} = req.query
-    const users = await get_users()
+    const users = await obtener_usuarios()
     const auth = users.find((s) => s.mail == email && s.contrasena == contrasena)
     if (!auth) {
         return res.status(401).send(`<script>alert("Email y/o contraseña no válidos"); window.location.href = "/login"</script>`)
@@ -173,15 +158,15 @@ app.post(rutas.recepcion_insumos, async (req, res) => {
     const encontrarBodega = nombreBodega.find((s) => bodega == s.id_bodega)
     const encontrarStock = stock.find((st) => st.id_insumo == encontrarId.id_insumo)
     if (!encontrarStock) {
-        await add_stock(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad)
-        await add_supply(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad, date)
+        await agregar_stock(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad)
+        await agregar_insumo(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad, date)
         return res.send(`<script>alert("Se han ingresado a la bodega '${encontrarBodega.nombre_bodega}' ${cantidad} unidades de '${insumo}' de forma exitosa"); window.location.href = "/recepcion"</script>`)
     }
     if (encontrarStock.id_bodega != bodega) {
         return res.send(`<script>alert("La bodega para el insumo '${insumo}' es la BODEGA ${encontrarStock.id_bodega} y haz elegido la BODEGA ${bodega}, vuelve a intentarlo"); window.location.href = "/recepcion"</script>`)
     }
     if (encontrarStock) {
-        await add_supply(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad, date)
+        await agregar_insumo(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad, date)
         await add_units(encontrarId.id_insumo, cantidad)
         return res.send(`<script>alert("Se han ingresado a la bodega '${encontrarBodega.nombre_bodega}' ${cantidad} unidades de '${insumo}' de forma exitosa"); window.location.href = "/recepcion"</script>`)
     }
@@ -311,7 +296,7 @@ app.get(rutas.reporteEnDetalle, async (req, res) =>{
 
 //Vista para dar permisos a nuevos usuarios, admin o bodeguero
 app.get(rutas.darPermisos, async (req, res) => {
-    const usuarios = await get_users()
+    const usuarios = await obtener_usuarios()
     res.render("dar_permisos", {
         layout: "dar_permisos",
         usuarios
