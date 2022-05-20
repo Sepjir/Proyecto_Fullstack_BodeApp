@@ -5,7 +5,9 @@ const rutas = {
     cambiarPermiso:"/cambiar_permiso",
     agregarBodega:"/agregar_bodega",
     agregarBodegas:"/agregar_bodegas",
-    borrarBodega:"/borrar_bodega/:id"
+    borrarBodega:"/borrar_bodega/:id",
+    agregarInsumo:"/agregar_insumo",
+    agregarInsumos:"/agregar_insumos"
 }
 
 module.exports = {rutas}

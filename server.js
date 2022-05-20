@@ -15,8 +15,8 @@ const {
     get_areas,
     add_area,
     delete_area,
-    get_tipo_insumos,
-    get_tipo_insumos_and_name,
+    obtener_tipo_insumos,
+    obtener_tipo_insumos_y_nombre,
     add_insumo,
     add_supply,
     get_ingresos,
@@ -162,7 +162,7 @@ app.get("/reception", async (_, res) => {
 //ruta con metodo post para ingresar mercadería a las bodegas
 app.post("/add_stock", async (req, res) => {
     const {name, storehouse, units, date} = req.body
-    const nameAndType = await get_tipo_insumos_and_name()
+    const nameAndType = await obtener_tipo_insumos_y_nombre()
     const storehouseName = await obtener_bodegas()
     const stock = await get_stock()
     const findId = nameAndType.find((i) => name == i.nombre_de_insumo)
@@ -199,7 +199,7 @@ app.post("/deliver_items", async (req, res) => {
     const {product, units, area, name, date} = req.body
     const areas = await get_areas()
     storehouseName = await obtener_bodegas()
-    const nameAndType = await get_tipo_insumos_and_name()
+    const nameAndType = await obtener_tipo_insumos_y_nombre()
     const ingresos = await get_ingresos()
     const stock = await get_stock()
     const findNameAndType = nameAndType.find((s) => s.nombre_de_insumo == product)
@@ -244,22 +244,22 @@ app.get("/delete_area/:id", async(req, res) => {
 })
 
 //ruta para la vista de añadir insumos a la lista general
-app.get("/add_items", async(req, res) => {
-    const insumos = await get_tipo_insumos_and_name()
-    const tipoInsumo = await get_tipo_insumos()
-    res.render("add_items", {
-        layout: "add_items",
+app.get(rutas.agregarInsumo, async (req, res) => {
+    const insumos = await obtener_tipo_insumos_y_nombre()
+    const tipoInsumo = await obtener_tipo_insumos()
+    res.render("agregar_insumos", {
+        layout: "agregar_insumos",
         insumos,
         tipoInsumo
     })
 })
 
 //ruta post para añadir un insumo a la lista general
-app.post("/add_item", async (req, res) => {
-    const {item, type} = req.body
-    const itemUppercase = item.toUpperCase()
-    await add_insumo(type, itemUppercase)
-    res.send(`<script>alert("El insumo '${itemUppercase}' se ha añadido exitosamente"); window.location.href = "/add_items"</script>`)
+app.post(rutas.agregarInsumos, async (req, res) => {
+    const {nombre_insumo, tipo} = req.body
+    const insumoMayuscula = nombre_insumo.toUpperCase()
+    await add_insumo(tipo, insumoMayuscula)
+    res.send(`<script>alert("El insumo '${insumoMayuscula}' se ha añadido exitosamente"); window.location.href = "/agregar_insumo"</script>`)
 })
 
 //ruta para vista de sección para agregar bodegas
@@ -276,14 +276,14 @@ app.post(rutas.agregarBodegas, async (req, res) =>{
     const {bodega} = req.body
     const bodegaMayuscula = bodega.toUpperCase()
     await agregar_bodega(bodegaMayuscula)
-    res.send(`<script>alert("La bodega '${bodegaMayuscula}' se ha añadido exitosamente"); window.location.href = "/add_storehouse"</script>`)
+    res.send(`<script>alert("La bodega '${bodegaMayuscula}' se ha añadido exitosamente"); window.location.href = "/agregar_bodega"</script>`)
 })
 
 //ruta para borrar una bodega
 app.get(rutas.borrarBodega, async(req, res) =>{
     const {id} = req.params
     await borrar_bodega(id)
-    res.send(`<script>alert("La bodega con id '${id}' se ha borrado exitosamente"); window.location.href = "/add_storehouse"</script>`)
+    res.send(`<script>alert("La bodega con id '${id}' se ha borrado exitosamente"); window.location.href = "/agregar_bodega"</script>`)
 })
 
 //ruta para vista de reporte por rango de fechas

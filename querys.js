@@ -16,7 +16,7 @@ async function get_insumos() {
 }
 
 //consulta para obtener tipo de insumo
-async function get_tipo_insumos() {
+async function obtener_tipo_insumos() {
     try {
         const result = await pool.query("SELECT * FROM tipo_de_insumo ORDER BY id_tipo_insumo")
         return result.rows
@@ -26,7 +26,7 @@ async function get_tipo_insumos() {
 }
 
 //consulta INNER JOIN para obtener los insumos y su tipo
-async function get_tipo_insumos_and_name() {
+async function obtener_tipo_insumos_y_nombre() {
     try {
         const result = await pool.query("SELECT * FROM insumo INNER JOIN tipo_de_insumo ON insumo.id_tipo_insumo = tipo_de_insumo.id_tipo_insumo ORDER BY id_insumo;")
         return result.rows
@@ -280,8 +280,8 @@ module.exports = {
     get_areas,
     add_area,
     delete_area,
-    get_tipo_insumos,
-    get_tipo_insumos_and_name,
+    obtener_tipo_insumos,
+    obtener_tipo_insumos_y_nombre,
     add_insumo,
     add_supply,
     get_ingresos,
