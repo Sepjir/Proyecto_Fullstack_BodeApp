@@ -11,7 +11,7 @@ async function obtener_usuarios() {
         const result = await pool.query("SELECT * FROM usuarios ORDER BY id_usuario;")
         return result.rows
     } catch (e) {
-        
+        return e
     }
 }
 
