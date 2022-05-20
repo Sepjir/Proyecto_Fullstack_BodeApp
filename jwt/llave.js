@@ -1,3 +1,3 @@
-const key = "bodegaoftalmo"
+const llave = "bodegaoftalmo"
 
-module.exports = {key}
+module.exports = {llave}

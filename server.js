@@ -7,7 +7,7 @@ const {rutas} = require("./rutas/rutas")
 const {
     obtener_insumos,
     obtener_bodegas,
-    add_user,
+    agregar_usuario,
     get_users,
     modificar_permiso_usuario,
     agregar_bodega,
@@ -50,21 +50,21 @@ app.engine("handlebars", exphbs.engine({
 }))
 
 //ruta para el index de la aplicación
-app.get("/", (_, res) => {
-    res.render("index", {
-        layout: "index",
+app.get(rutas.inicio, (req, res) => {
+    res.render("inicio", {
+        layout: "inicio",
     })
 })
 
 //ruta get para el inicio de sesión
-app.get("/login", (_, res) => {
-    res.render("login", {
-        layout: "login"
+app.get(rutas.ingreso, (req, res) => {
+    res.render("ingreso", {
+        layout: "ingreso"
     })
 })
 
 //ruta para identificar a los usuarios con JWT
-app.get("/verifylogin", async (req, res) => {
+app.get(rutas.verificar, async (req, res) => {
     const {email, contrasena} = req.query
     const users = await get_users()
     const auth = users.find((s) => s.mail == email && s.contrasena == contrasena)
@@ -74,13 +74,13 @@ app.get("/verifylogin", async (req, res) => {
         const token = jwt.sign({
             exp: Math.floor(Date.now()/ 1000) + 28800,
             data: auth
-        }, key)
+        }, llave)
         return res.send(`<script>alert("Bienvenido ${auth.nombre}, serás redirigido al control de inventario..."); window.location.href = "/bodeguero?token=${token}"</script>`)
     }if (auth.id_tipo_usuario == 1) {
         const token = jwt.sign({
             exp: Math.floor(Date.now()/ 1000) + 28800,
             data: auth
-        }, key)
+        }, llave)
         return res.send(`<script>alert("Bienvenido administrador, serás redirigido al control maestro"); window.location.href = "/admin?token=${token}"</script>`)
     }if (auth.id_tipo_usuario == 3) {
         return res.send(`<script>alert("Lo siento ${auth.nombre}, actualmente no tienes autorización"); window.location.href = "/login"</script>`)
@@ -88,21 +88,21 @@ app.get("/verifylogin", async (req, res) => {
 })
 
 //ruta para registrar usuarios
-app.get("/signon", (_, res) => {
-    res.render("signon", {
-        layout: "signon"
+app.get(rutas.registrar, (_, res) => {
+    res.render("registrar", {
+        layout: "registrar"
     })    
 })
 
 //ruta que registra efectivamente a los usuarios con metodo post
-app.post("/adduser", async (req, res) => {
-    const {email, name, lastname, password, password2} = req.body
-    const idType = 3
-    if (password == password2) {
-        await add_user(idType, name, lastname, email, password)
+app.post(rutas.registrarUsuario, async (req, res) => {
+    const {email, nombre, apellido, contrasena, contrasena2} = req.body
+    const idTipo = 3
+    if (contrasena == contrasena2) {
+        await agregar_usuario(idTipo, nombre, apellido, email, contrasena)
         res.send(`<script>alert("El usuario ha sido creado éxitosamente"); window.location.href = "/"</script>`)
     } else {
-        res.send(`<script>alert("Las contraseñas no coinciden. Vuelva a intentarlo"); window.location.href = "/signon"</script>`)
+        res.send(`<script>alert("Las contraseñas no coinciden. Vuelva a intentarlo"); window.location.href = "/registrar"</script>`)
     }
 })
 
@@ -124,7 +124,7 @@ app.get(rutas.admin, (req, res) => {
 })
 
 //ruta para vista de stock
-app.get(rutas.stock, async (_, res) => {
+app.get(rutas.stock, async (req, res) => {
     const {token} = req.query
     const stockActual = await stock_actual()
     const stockCritico = await stock_critico()
@@ -139,7 +139,7 @@ app.get(rutas.stock, async (_, res) => {
 //ruta para vista como bodeguero autentificando el token
 app.get(rutas.bodeguero, (req, res) => {
     const {token} = req.query
-    jwt.verify(token, key, (err, decoded) =>{
+    jwt.verify(token, llave, (err, decoded) =>{
         if (!decoded) {
             return res.status(401).send(`<script>alert("No estás autorizado"); window.location.href = "/login"</script>`)
         }

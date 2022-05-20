@@ -92,7 +92,7 @@ async function get_users() {
 }
 
 //consulta para registrar usuarios en la tabla usuarios
-async function add_user(type_user, name, lastname, email, password) {
+async function agregar_usuario(type_user, name, lastname, email, password) {
     try {
         const result = await pool.query("INSERT INTO usuarios (id_tipo_usuario, nombre, apellido, mail, contrasena) VALUES ($1, $2, $3, $4, $5) RETURNING*;",
         [`${type_user}`, `${name}`, `${lastname}`, `${email}`, `${password}`]
@@ -273,7 +273,7 @@ module.exports = {
     obtener_insumos,
     obtener_bodegas,
     agregar_bodega,
-    add_user,
+    agregar_usuario,
     get_users,
     modificar_permiso_usuario,
     borrar_bodega,

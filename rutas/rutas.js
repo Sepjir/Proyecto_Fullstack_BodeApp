@@ -16,7 +16,12 @@ const rutas = {
     recepcion_insumos:"/recepcion_insumos",
     bodeguero:"/bodeguero",
     stock:"/stock",
-    admin:"/admin"
+    admin:"/admin",
+    registrar:"/registrar",
+    registrarUsuario:"/registrar_usuario",
+    verificar:"/verificar",
+    ingreso:"/ingreso",
+    inicio:"/inicio"
 }
 
 module.exports = {rutas}
