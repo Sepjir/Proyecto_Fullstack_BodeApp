@@ -29,7 +29,7 @@ async function reporte_fechas_ingresos(fecha, fecha2) {
 //consultas para ver información de stock actual y stock critico
 async function stock_actual() {
     try {
-        const result = await pool.query("SELECT insumo.nombre_de_insumo, tipo_de_insumo.tipo_de_insumo, bodegas.nombre_bodega, stock.cantidad_en_stock FROM stock INNER JOIN insumo ON (stock.id_insumo = insumo.id_insumo) INNER JOIN tipo_de_insumo ON (stock.id_tipo_insumo = tipo_de_insumo.id_tipo_insumo) INNER JOIN bodegas ON (stock.id_bodega = bodegas.id_bodega) WHERE stock.cantidad_en_stock > 20 ORDER BY nombre_de_insumo;")
+        const result = await pool.query("SELECT insumo.nombre_de_insumo, tipo_de_insumo.tipo_de_insumo, bodegas.nombre_bodega, stock.cantidad_en_stock FROM stock INNER JOIN insumo ON (stock.id_insumo = insumo.id_insumo) INNER JOIN tipo_de_insumo ON (stock.id_tipo_insumo = tipo_de_insumo.id_tipo_insumo) INNER JOIN bodegas ON (stock.id_bodega = bodegas.id_bodega) WHERE stock.cantidad_en_stock >= 20 ORDER BY nombre_de_insumo;")
         return result.rows
     } catch (e) {
         return e

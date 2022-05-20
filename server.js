@@ -48,6 +48,8 @@ app.get(rutas.ingreso, (req, res) => {
     })
 })
 
+//middleware para volver a vista bodeguero o administrador segun sea el caso
+
 //ruta para identificar a los usuarios con JWT
 app.get(rutas.verificar, async (req, res) => {
     const {email, contrasena} = req.query
@@ -283,20 +285,24 @@ app.get(rutas.borrarBodega, async(req, res) =>{
 
 //ruta para vista de reporte por rango de fechas
 app.get(rutas.formularioReporte, (req, res) => {
+    const {token} = req.query
     res.render("reporte", {
-        layout: "reporte"
+        layout: "reporte",
+        token
     })
 })
 
 //vista para detalle del reporte de inventario
-app.get(rutas.reporteEnDetalle, async (req, res) =>{
-    const {fecha, fecha2} = req.query
+app.post(rutas.reporteEnDetalle, async (req, res) =>{
+    const {token} = req.query
+    const {fecha, fecha2} = req.body
     const ingresosPorFecha = await reporte_fechas_ingresos(fecha, fecha2)
     const egresosPorFecha = await reporte_fechas_egresos(fecha, fecha2)
-    res.render("detalle_reporte", {
-        layout: "detalle_reporte",
+    res.render("detalles_reporte", {
+        layout: "detalles_reporte",
         ingresosPorFecha,
-        egresosPorFecha
+        egresosPorFecha,
+        token
     })
 })
 

@@ -1,5 +1,5 @@
 const rutas = {
-    reporteEnDetalle:"/reporte_detalle",
+    reporteEnDetalle:"/reporte_detalle/",
     formularioReporte:"/reporte",
     darPermisos:"/permisos",
     cambiarPermiso:"/cambiar_permiso",
