@@ -37,16 +37,16 @@ app.engine("handlebars", exphbs.engine({
 //middleware para volver a vista bodeguero o administrador segun sea el caso
 app.get(rutas.inicio, (req, res, next) => {
     const {token} = req.query
-    const decodificador = jwt.verify(token, llave, (err, decoded) =>{
+    const decodificado = jwt.verify(token, llave, (err, decoded) =>{
         return decoded
     })
-    if (!decodificador) {
+    if (!decodificado) {
         return next()
     }
-    if (decodificador.data.id_tipo_usuario == 1) {
+    if (decodificado.data.id_tipo_usuario == 1) {
         return res.send(`<script>window.location.href = "/admin?token=${token}"</script>`)
     }
-    if (decodificador.data.id_tipo_usuario == 2) {
+    if (decodificado.data.id_tipo_usuario == 2) {
         return res.send(`<script>window.location.href = "/bodeguero?token=${token}"</script>`)
     }
 })
