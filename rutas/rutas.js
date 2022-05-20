@@ -7,7 +7,8 @@ const rutas = {
     agregarBodegas:"/agregar_bodegas",
     borrarBodega:"/borrar_bodega/:id",
     agregarInsumo:"/agregar_insumo",
-    agregarInsumos:"/agregar_insumos"
+    agregarInsumos:"/agregar_insumos",
+    agregarArea:"/agregar_area"
 }
 
 module.exports = {rutas}

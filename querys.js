@@ -115,7 +115,7 @@ async function modificar_permiso_usuario(id, id_tipo_usuario) {
 }
 
 //consulta para obtener datos de departamentos
-async function get_areas() {
+async function obtener_areas() {
     try {
         const result = await pool.query("SELECT * FROM area;")
         return result.rows
@@ -277,7 +277,7 @@ module.exports = {
     get_users,
     modificar_permiso_usuario,
     borrar_bodega,
-    get_areas,
+    obtener_areas,
     add_area,
     delete_area,
     obtener_tipo_insumos,

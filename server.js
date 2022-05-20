@@ -12,7 +12,7 @@ const {
     modificar_permiso_usuario,
     agregar_bodega,
     borrar_bodega,
-    get_areas,
+    obtener_areas,
     add_area,
     delete_area,
     obtener_tipo_insumos,
@@ -186,7 +186,7 @@ app.post("/add_stock", async (req, res) => {
 //ruta para vista de entrega de insumos
 app.get("/deliver", async (req, res) => {
     const insumos = await get_insumos()
-    const areas = await get_areas()
+    const areas = await obtener_areas()
     res.render("deliver" ,{
         layout: "deliver",
         insumos,
@@ -197,7 +197,7 @@ app.get("/deliver", async (req, res) => {
 //ruta POST para entregar insumos a departamentos
 app.post("/deliver_items", async (req, res) => {
     const {product, units, area, name, date} = req.body
-    const areas = await get_areas()
+    const areas = await obtener_areas()
     storehouseName = await obtener_bodegas()
     const nameAndType = await obtener_tipo_insumos_y_nombre()
     const ingresos = await get_ingresos()
@@ -220,8 +220,8 @@ app.post("/deliver_items", async (req, res) => {
 })
 
 //ruta para vista que añade una nueva area/departamento
-app.get("/add_area", async(req, res) => {
-    const areas = await get_areas()
+app.get(rutas.agregarArea, async(req, res) => {
+    const areas = await obtener_areas()
     res.render("add_areas", {
         layout: "add_areas",
         areas
@@ -229,11 +229,11 @@ app.get("/add_area", async(req, res) => {
 })
 
 //ruta post para añadir un nuevo departamento
-app.post("/add_area", async(req, res) => {
+app.post(rutas.agregarArea, async(req, res) => {
     const {area} = req.body
-    const areaUpperCase = area.toUpperCase()
-    await add_area(areaUpperCase)
-    res.send(`<script>alert("El departamento '${areaUpperCase}' se ha añadido exitosamente"); window.location.href = "/add_area"</script>`)
+    const areaMayuscula = area.toUpperCase()
+    await add_area(areaMayuscula)
+    res.send(`<script>alert("El departamento '${areaMayuscula}' se ha añadido exitosamente"); window.location.href = "/add_area"</script>`)
 })
 
 //ruta para borrar un departamento
