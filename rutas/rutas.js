@@ -14,7 +14,9 @@ const rutas = {
     entregarInsumos:"/entregar_insumos",
     recepcion:"/recepcion",
     recepcion_insumos:"/recepcion_insumos",
-    bodeguero:"/bodeguero"
+    bodeguero:"/bodeguero",
+    stock:"/stock",
+    admin:"/admin"
 }
 
 module.exports = {rutas}

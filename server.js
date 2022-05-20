@@ -31,7 +31,7 @@ const {
     stock_critico} = require("./querys")
 
 const jwt = require("jsonwebtoken")
-const {key} = require("./jwt/key")
+const {llave} = require("./jwt/llave")
 const moment = require("moment")
 
 app.use(express.json())
@@ -107,15 +107,16 @@ app.post("/adduser", async (req, res) => {
 })
 
 //ruta para vista de administrador verificado con JWT
-app.get("/admin", (req, res) => {
+app.get(rutas.admin, (req, res) => {
     const {token} = req.query
-    jwt.verify(token, key, (err, decoded) =>{
+    jwt.verify(token, llave, (err, decoded) =>{
         if (!decoded) {
             return res.status(401).send(`<script>alert("No estás autorizado"); window.location.href = "/login"</script>`)
         }
         if (decoded.data.id_tipo_usuario == 1) {
             res.render("admin", {
-                layout: "admin"
+                layout: "admin",
+                token
             })
         }
     })
@@ -123,13 +124,15 @@ app.get("/admin", (req, res) => {
 })
 
 //ruta para vista de stock
-app.get("/stock", async (_, res) => {
+app.get(rutas.stock, async (_, res) => {
+    const {token} = req.query
     const stockActual = await stock_actual()
     const stockCritico = await stock_critico()
     res.render("stock", {
         layout: "stock",
         stockActual,
-        stockCritico
+        stockCritico,
+        token
     })
 })
 
