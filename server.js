@@ -71,7 +71,6 @@ app.get(rutas.ingreso, (req, res) => {
 app.get(rutas.verificar, async (req, res) => {
     const {email, contrasena} = req.query
     const usuarios = await obtener_usuarios()
-    console.log(usuarios)
     const auth = usuarios.find((s) => s.mail == email && s.contrasena == contrasena)
     if (!auth) {
         return res.status(401).send(`<script>alert("Email y/o contraseña no válidos"); window.location.href = "/ingreso"</script>`)
