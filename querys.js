@@ -48,7 +48,7 @@ async function add_insumo(type, name) {
 }
 
 //consulta para obtener las bodegas
-async function get_bodegas() {
+async function obtener_bodegas() {
     try {
         const result = await pool.query("SELECT * FROM bodegas ORDER BY id_bodega")
         return result.rows
@@ -58,7 +58,7 @@ async function get_bodegas() {
 }
 
 //consulta para agregar una bodega nueva
-async function add_bodega(name) {
+async function agregar_bodega(name) {
     try {
         const result = await pool.query("INSERT INTO bodegas (nombre_bodega) VALUES ($1) RETURNING*;",
         [`${name}`]
@@ -70,7 +70,7 @@ async function add_bodega(name) {
 }
 
 //consulta para borrar bodegas
-async function delete_bodega(id) {
+async function borrar_bodega(id) {
     try {
         const result = await pool.query("DELETE FROM bodegas WHERE id_bodega=$1 RETURNING*;",
         [`${id}`]
@@ -271,12 +271,12 @@ async function stock_critico() {
 
 module.exports = {
     get_insumos,
-    get_bodegas,
+    obtener_bodegas,
+    agregar_bodega,
     add_user,
     get_users,
     modificar_permiso_usuario,
-    add_bodega,
-    delete_bodega,
+    borrar_bodega,
     get_areas,
     add_area,
     delete_area,

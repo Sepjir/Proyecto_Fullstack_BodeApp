@@ -265,23 +265,24 @@ app.post("/add_item", async (req, res) => {
 })
 
 //ruta para vista de sección para agregar bodegas
-app.get("/add_storehouse", async (req, res) => {
-    const bodegas = await get_bodegas()
-    res.render("add_storehouse", {
-        layout: "add_storehouse",
+app.get(rutas.agregarBodega, async (req, res) => {
+    const bodegas = await obtener_bodegas()
+    res.render("agregar_bodegas", {
+        layout: "agregar_bodegas",
         bodegas
     })
 })
 
 //ruta para agregar bodegas
-app.post("/add_storehouses", async (req, res) =>{
+app.post(rutas.agregarBodegas, async (req, res) =>{
     const {bodega} = req.body
-    const bodegaUpperCase = bodega.toUpperCase()
-    await add_bodega(bodegaUpperCase)
-    res.send(`<script>alert("La bodega '${bodegaUpperCase}' se ha añadido exitosamente"); window.location.href = "/add_storehouse"</script>`)
+    const bodegaMayuscula = bodega.toUpperCase()
+    await add_bodega(bodegaMayuscula)
+    res.send(`<script>alert("La bodega '${bodegaMayuscula}' se ha añadido exitosamente"); window.location.href = "/add_storehouse"</script>`)
 })
 
-app.get("/delete_storehouse/:id", async(req, res) =>{
+//ruta para borrar una bodega
+app.get(rutas.borrarBodega, async(req, res) =>{
     const {id} = req.params
     await delete_bodega(id)
     res.send(`<script>alert("La bodega con id '${id}' se ha borrado exitosamente"); window.location.href = "/add_storehouse"</script>`)
