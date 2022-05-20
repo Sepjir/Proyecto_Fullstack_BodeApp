@@ -11,7 +11,9 @@ const rutas = {
     agregarArea:"/agregar_area",
     borrarArea:"/borrar_area/:id",
     entregarInsumo:"/entregar_insumo",
-    entregarInsumos:"/entregar_insumos"
+    entregarInsumos:"/entregar_insumos",
+    recepcion:"/recepcion",
+    recepcion_insumos:"/recepcion_insumos"
 }
 
 module.exports = {rutas}
