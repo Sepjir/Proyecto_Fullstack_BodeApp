@@ -9,6 +9,7 @@ const {
     get_bodegas,
     add_user,
     get_users,
+    modificar_permiso_usuario,
     add_bodega,
     delete_bodega,
     get_areas,
@@ -50,7 +51,6 @@ app.engine("handlebars", exphbs.engine({
 
 //ruta para el index de la aplicación
 app.get("/", (_, res) => {
-    console.log(rutas)
     res.render("index", {
         layout: "index",
     })
@@ -98,7 +98,6 @@ app.get("/signon", (_, res) => {
 app.post("/adduser", async (req, res) => {
     const {email, name, lastname, password, password2} = req.body
     const idType = 3
-    console.log(email, name, lastname, password,idType)
     if (password == password2) {
         await add_user(idType, name, lastname, email, password)
         res.send(`<script>alert("El usuario ha sido creado éxitosamente"); window.location.href = "/"</script>`)
@@ -305,6 +304,23 @@ app.get(rutas.reporteEnDetalle, async (req, res) =>{
         ingresosPorFecha,
         egresosPorFecha
     })
+})
+
+//Vista para dar permisos a nuevos usuarios, admin o bodeguero
+app.get(rutas.darPermisos, async (req, res) => {
+    const usuarios = await get_users()
+    res.render("dar_permisos", {
+        layout: "dar_permisos",
+        usuarios
+    })
+})
+
+//lógica para dar permisos a usuarios registrados mediante metodo PUT
+app.get(rutas.cambiarPermiso, async (req, res) => {
+    const{id, permiso} = req.query
+    await modificar_permiso_usuario(id, permiso)
+    res.send(`<script>window.location.href = "/permisos"</script>`)
+
 })
 
 

@@ -1,0 +1,56 @@
+<div class="container text-center mt-2">
+    <h1>Dar permisos</h1>
+    <hr class="w-50 container" />
+</div>
+
+<div class="container">
+    <h2 class="text-center mt-2">Usuarios</h2>
+    <div class="row mt-2">
+        <div class="col-12 table-responsive-sm">
+            <table class="table table-sm table-bordered border-primary">
+                <thead>
+                    <tr>
+                    <th scope="col">Id Usuario</th>
+                    <th scope="col">Tipo de Usuario</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Mail</th>
+                    <th scope="col">Permiso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each usuarios}}
+                    <tr>
+                    <th scope="row">{{this.id_usuario}}</th>
+                    <td>{{this.id_tipo_usuario}}</td>
+                    <td>{{this.nombre}} {{this.apellido}}</td>
+                    <td>{{this.mail}}</td>
+                    <td><input type="checkbox" onclick="cambioCheckbox{{this.id_usuario}}()" id="{{this.id_usuario}}" /></td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container text-center mt-2 mb-5"><a href="/admin"><button class="btn btn-success">Volver</button></a></div>
+<script>
+    {{#each usuarios}}
+      function cambioCheckbox{{this.id_usuario}} () {
+      let checkbox = document.getElementById("{{this.id_usuario}}")
+        if (checkbox.checked) {
+            alert("Se ha cambiado el estado ha 'Bodeguero'") 
+            window.location.href = "/cambiar_permiso?id={{this.id_usuario}}&permiso=2"
+        } else{
+            alert("Se ha cambiado el estado a 'Usuario registrado'") 
+            window.location.href = "/cambiar_permiso?id={{this.id_usuario}}&permiso=3"
+        }
+      }
+      function checkingBox{{this.id_usuario}}() {
+        let checkbox = document.getElementById("{{this.id_usuario}}")
+        if ({{this.id_tipo_usuario}} == 2 || {{this.id_tipo_usuario}} == 1) {
+            checkbox.setAttribute("checked", "checked")
+        }
+      }
+      checkingBox{{this.id_usuario}}()
+    {{/each}}
+    </script>
