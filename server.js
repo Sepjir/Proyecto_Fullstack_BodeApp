@@ -6,12 +6,12 @@ const {rutas} = require("./rutas/rutas")
 //consultas a base de datos
 const {
     get_insumos,
-    get_bodegas,
+    obtener_bodegas,
     add_user,
     get_users,
     modificar_permiso_usuario,
-    add_bodega,
-    delete_bodega,
+    agregar_bodega,
+    borrar_bodega,
     get_areas,
     add_area,
     delete_area,
@@ -277,7 +277,7 @@ app.get(rutas.agregarBodega, async (req, res) => {
 app.post(rutas.agregarBodegas, async (req, res) =>{
     const {bodega} = req.body
     const bodegaMayuscula = bodega.toUpperCase()
-    await add_bodega(bodegaMayuscula)
+    await agregar_bodega(bodegaMayuscula)
     res.send(`<script>alert("La bodega '${bodegaMayuscula}' se ha añadido exitosamente"); window.location.href = "/add_storehouse"</script>`)
 })
 
