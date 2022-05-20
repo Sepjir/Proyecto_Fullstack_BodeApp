@@ -34,6 +34,24 @@ app.engine("handlebars", exphbs.engine({
     partialsDir: __dirname + "/views/components"
 }))
 
+//middleware para volver a vista bodeguero o administrador segun sea el caso
+app.get(rutas.inicio, (req, res, next) => {
+    const {token} = req.query
+    const decodificador = jwt.verify(token, llave, (err, decoded) =>{
+        return decoded
+    })
+    if (!decodificador) {
+        return next()
+    }
+    if (decodificador.data.id_tipo_usuario == 1) {
+        return res.send(`<script>window.location.href = "/admin?token=${token}"</script>`)
+    }
+    if (decodificador.data.id_tipo_usuario == 2) {
+        return res.send(`<script>window.location.href = "/bodeguero?token=${token}"</script>`)
+    }
+})
+
+
 //ruta para el index de la aplicación
 app.get(rutas.inicio, (req, res) => {
     res.render("inicio", {
@@ -48,7 +66,6 @@ app.get(rutas.ingreso, (req, res) => {
     })
 })
 
-//middleware para volver a vista bodeguero o administrador segun sea el caso
 
 //ruta para identificar a los usuarios con JWT
 app.get(rutas.verificar, async (req, res) => {
@@ -56,7 +73,7 @@ app.get(rutas.verificar, async (req, res) => {
     const users = await obtener_usuarios()
     const auth = users.find((s) => s.mail == email && s.contrasena == contrasena)
     if (!auth) {
-        return res.status(401).send(`<script>alert("Email y/o contraseña no válidos"); window.location.href = "/login"</script>`)
+        return res.status(401).send(`<script>alert("Email y/o contraseña no válidos"); window.location.href = "/ingreso"</script>`)
     }if (auth.id_tipo_usuario == 2) {
         const token = jwt.sign({
             exp: Math.floor(Date.now()/ 1000) + 28800,
@@ -70,7 +87,7 @@ app.get(rutas.verificar, async (req, res) => {
         }, llave)
         return res.send(`<script>alert("Bienvenido administrador, serás redirigido al control maestro"); window.location.href = "/admin?token=${token}"</script>`)
     }if (auth.id_tipo_usuario == 3) {
-        return res.send(`<script>alert("Lo siento ${auth.nombre}, actualmente no tienes autorización"); window.location.href = "/login"</script>`)
+        return res.send(`<script>alert("Lo siento ${auth.nombre}, actualmente no tienes autorización"); window.location.href = "/ingreso"</script>`)
     }
 })
 
@@ -98,7 +115,7 @@ app.get(rutas.admin, (req, res) => {
     const {token} = req.query
     jwt.verify(token, llave, (err, decoded) =>{
         if (!decoded) {
-            return res.status(401).send(`<script>alert("No estás autorizado"); window.location.href = "/login"</script>`)
+            return res.status(401).send(`<script>alert("No estás autorizado"); window.location.href = "/ingreso"</script>`)
         }
         if (decoded.data.id_tipo_usuario == 1) {
             res.render("admin", {
@@ -242,45 +259,51 @@ app.get(rutas.borrarArea, async(req, res) => {
 
 //ruta para la vista de añadir insumos a la lista general
 app.get(rutas.agregarInsumo, async (req, res) => {
+    const {token} = req.query
     const insumos = await obtener_tipo_insumos_y_nombre()
     const tipoInsumo = await obtener_tipo_insumos()
     res.render("agregar_insumos", {
         layout: "agregar_insumos",
         insumos,
-        tipoInsumo
+        tipoInsumo,
+        token
     })
 })
 
 //ruta post para añadir un insumo a la lista general
 app.post(rutas.agregarInsumos, async (req, res) => {
+    const {token} = req.query
     const {nombre_insumo, tipo} = req.body
     const insumoMayuscula = nombre_insumo.toUpperCase()
     await add_insumo(tipo, insumoMayuscula)
-    res.send(`<script>alert("El insumo '${insumoMayuscula}' se ha añadido exitosamente"); window.location.href = "/agregar_insumo"</script>`)
+    res.send(`<script>alert("El insumo '${insumoMayuscula}' se ha añadido exitosamente"); window.location.href = "/agregar_insumo?token=${token}"</script>`)
 })
 
 //ruta para vista de sección para agregar bodegas
 app.get(rutas.agregarBodega, async (req, res) => {
+    const {token} = req.query
     const bodegas = await obtener_bodegas()
     res.render("agregar_bodegas", {
         layout: "agregar_bodegas",
-        bodegas
+        bodegas,
+        token
     })
 })
 
 //ruta para agregar bodegas
 app.post(rutas.agregarBodegas, async (req, res) =>{
+    const {token} = req.query
     const {bodega} = req.body
     const bodegaMayuscula = bodega.toUpperCase()
     await agregar_bodega(bodegaMayuscula)
-    res.send(`<script>alert("La bodega '${bodegaMayuscula}' se ha añadido exitosamente"); window.location.href = "/agregar_bodega"</script>`)
+    res.send(`<script>alert("La bodega '${bodegaMayuscula}' se ha añadido exitosamente"); window.location.href = "/agregar_bodega?token=${token}"</script>`)
 })
 
 //ruta para borrar una bodega
 app.get(rutas.borrarBodega, async(req, res) =>{
-    const {id} = req.params
+    const {token, id} = req.query
     await borrar_bodega(id)
-    res.send(`<script>alert("La bodega con id '${id}' se ha borrado exitosamente"); window.location.href = "/agregar_bodega"</script>`)
+    res.send(`<script>alert("La bodega con id '${id}' se ha borrado exitosamente"); window.location.href = "/agregar_bodega?token=${token}"</script>`)
 })
 
 //ruta para vista de reporte por rango de fechas
@@ -308,19 +331,20 @@ app.post(rutas.reporteEnDetalle, async (req, res) =>{
 
 //Vista para dar permisos a nuevos usuarios, admin o bodeguero
 app.get(rutas.darPermisos, async (req, res) => {
+    const {token} = req.query
     const usuarios = await obtener_usuarios()
     res.render("dar_permisos", {
         layout: "dar_permisos",
-        usuarios
+        usuarios,
+        token
     })
 })
 
 //lógica para dar permisos a usuarios registrados mediante metodo PUT
 app.get(rutas.cambiarPermiso, async (req, res) => {
-    const{id, permiso} = req.query
+    const{id, permiso, token} = req.query
     await modificar_permiso_usuario(id, permiso)
-    res.send(`<script>window.location.href = "/permisos"</script>`)
-
+    res.send(`<script>window.location.href = "/permisos?token=${token}"</script>`)
 })
 
 

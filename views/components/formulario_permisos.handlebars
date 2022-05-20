@@ -32,17 +32,17 @@
         </div>
     </div>
 </div>
-<div class="container text-center mt-2 mb-5"><a href="/admin"><button class="btn btn-success">Volver</button></a></div>
+<div class="container text-center mt-2 mb-5"><a href="/admin?token={{token}}"><button class="btn btn-success">Volver</button></a></div>
 <script>
     {{#each usuarios}}
       function cambioCheckbox{{this.id_usuario}} () {
       let checkbox = document.getElementById("{{this.id_usuario}}")
         if (checkbox.checked) {
             alert("Se ha cambiado el estado ha 'Bodeguero'") 
-            window.location.href = "/cambiar_permiso?id={{this.id_usuario}}&permiso=2"
+            window.location.href = "/cambiar_permiso?id={{this.id_usuario}}&permiso=2&token={{token}}"
         } else{
             alert("Se ha cambiado el estado a 'Usuario registrado'") 
-            window.location.href = "/cambiar_permiso?id={{this.id_usuario}}&permiso=3"
+            window.location.href = "/cambiar_permiso?id={{this.id_usuario}}&permiso=3&token={{token}}"
         }
       }
       function checkingBox{{this.id_usuario}}() {
