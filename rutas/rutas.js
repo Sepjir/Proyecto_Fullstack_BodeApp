@@ -13,7 +13,8 @@ const rutas = {
     entregarInsumo:"/entregar_insumo",
     entregarInsumos:"/entregar_insumos",
     recepcion:"/recepcion",
-    recepcion_insumos:"/recepcion_insumos"
+    recepcion_insumos:"/recepcion_insumos",
+    bodeguero:"/bodeguero"
 }
 
 module.exports = {rutas}

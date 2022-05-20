@@ -75,7 +75,7 @@ app.get("/verifylogin", async (req, res) => {
             exp: Math.floor(Date.now()/ 1000) + 28800,
             data: auth
         }, key)
-        return res.send(`<script>alert("Bienvenido ${auth.nombre}, serás redirigido al control de inventario..."); window.location.href = "/storekeeper?token=${token}"</script>`)
+        return res.send(`<script>alert("Bienvenido ${auth.nombre}, serás redirigido al control de inventario..."); window.location.href = "/bodeguero?token=${token}"</script>`)
     }if (auth.id_tipo_usuario == 1) {
         const token = jwt.sign({
             exp: Math.floor(Date.now()/ 1000) + 28800,
@@ -134,15 +134,16 @@ app.get("/stock", async (_, res) => {
 })
 
 //ruta para vista como bodeguero autentificando el token
-app.get("/storekeeper", (req, res) => {
+app.get(rutas.bodeguero, (req, res) => {
     const {token} = req.query
     jwt.verify(token, key, (err, decoded) =>{
         if (!decoded) {
             return res.status(401).send(`<script>alert("No estás autorizado"); window.location.href = "/login"</script>`)
         }
         if (decoded.data.id_tipo_usuario == 2) {
-            res.render("store_keeper", {
-                layout: "store_keeper"
+            res.render("bodeguero", {
+                layout: "bodeguero",
+                token
             }) 
         }
     })
