@@ -126,7 +126,7 @@ app.get(rutas.bodeguero, (req, res) => {
     const {token} = req.query
     jwt.verify(token, llave, (err, decoded) =>{
         if (!decoded) {
-            return res.status(401).send(`<script>alert("No estás autorizado"); window.location.href = "/login"</script>`)
+            return res.status(401).send(`<script>alert("No estás autorizado"); window.location.href = "/ingreso"</script>`)
         }
         if (decoded.data.id_tipo_usuario == 2) {
             res.render("bodeguero", {
@@ -138,19 +138,22 @@ app.get(rutas.bodeguero, (req, res) => {
 })
 
 //ruta vista para ingresar mercadería a la bodega
-app.get(rutas.recepcion, async (_, res) => {
+app.get(rutas.recepcion, async (req, res) => {
+    const {token} = req.query
     const insumos = await obtener_insumos()
     const bodegas = await obtener_bodegas()
     res.render("recepcion", {
         layout: "recepcion",
         insumos,
-        bodegas
+        bodegas,
+        token
     })
 })
 
 //ruta con metodo post para ingresar mercadería a las bodegas
 app.post(rutas.recepcion_insumos, async (req, res) => {
-    const {insumo, bodega, cantidad, date} = req.body
+    const {token} = req.query
+    const {insumo, bodega, cantidad, fecha} = req.body
     const nombreTipo = await obtener_tipo_insumos_y_nombre()
     const nombreBodega = await obtener_bodegas()
     const stock = await obtener_stock()
@@ -159,32 +162,35 @@ app.post(rutas.recepcion_insumos, async (req, res) => {
     const encontrarStock = stock.find((st) => st.id_insumo == encontrarId.id_insumo)
     if (!encontrarStock) {
         await agregar_stock(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad)
-        await agregar_insumo(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad, date)
-        return res.send(`<script>alert("Se han ingresado a la bodega '${encontrarBodega.nombre_bodega}' ${cantidad} unidades de '${insumo}' de forma exitosa"); window.location.href = "/recepcion"</script>`)
+        await agregar_insumo(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad, fecha)
+        return res.send(`<script>alert("Se han ingresado a la bodega '${encontrarBodega.nombre_bodega}' ${cantidad} unidades de '${insumo}' de forma exitosa"); window.location.href = "/recepcion?token=${token}"</script>`)
     }
     if (encontrarStock.id_bodega != bodega) {
-        return res.send(`<script>alert("La bodega para el insumo '${insumo}' es la BODEGA ${encontrarStock.id_bodega} y haz elegido la BODEGA ${bodega}, vuelve a intentarlo"); window.location.href = "/recepcion"</script>`)
+        return res.send(`<script>alert("La bodega para el insumo '${insumo}' es la BODEGA ${encontrarStock.id_bodega} y haz elegido la BODEGA ${bodega}, vuelve a intentarlo"); window.location.href = "/recepcion?token=${token}"</script>`)
     }
     if (encontrarStock) {
-        await agregar_insumo(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad, date)
-        await add_units(encontrarId.id_insumo, cantidad)
-        return res.send(`<script>alert("Se han ingresado a la bodega '${encontrarBodega.nombre_bodega}' ${cantidad} unidades de '${insumo}' de forma exitosa"); window.location.href = "/recepcion"</script>`)
+        await agregar_insumo(encontrarId.id_insumo, encontrarId.id_tipo_insumo, bodega, cantidad, fecha)
+        await agregar_unidades(encontrarId.id_insumo, cantidad)
+        return res.send(`<script>alert("Se han ingresado a la bodega '${encontrarBodega.nombre_bodega}' ${cantidad} unidades de '${insumo}' de forma exitosa"); window.location.href = "/recepcion?token=${token}"</script>`)
     }
 })
 
 //ruta para vista de entrega de insumos
 app.get(rutas.entregarInsumo, async (req, res) => {
+    const {token} = req.query
     const insumos = await obtener_insumos()
     const areas = await obtener_areas()
     res.render("entrega" ,{
         layout: "entrega",
         insumos,
-        areas
+        areas,
+        token
     })
 })
 
 //ruta POST para entregar insumos a departamentos
 app.post(rutas.entregarInsumos, async (req, res) => {
+    const{token} = req.query
     const {insumo, cantidad, area, nombre, fecha} = req.body
     const areas = await obtener_areas()
     const nombreBodega = await obtener_bodegas()
@@ -197,13 +203,13 @@ app.post(rutas.entregarInsumos, async (req, res) => {
     const encontrarStock = stock.find((st) => st.id_insumo == encontrarIdIngresos.id_insumo)
     const encontrarBodega = nombreBodega.find((store) => store.id_bodega == encontrarIdIngresos.id_bodega)
     if (!encontrarStock) {
-        res.send(`<script>alert("No existe el insumo '${insumo}' en bodega"); window.location.href = "/deliver"</script>`)
+        res.send(`<script>alert("No existe el insumo '${insumo}' en bodega"); window.location.href = "/entregar_insumo?token=${token}"</script>`)
     }if (encontrarStock && encontrarStock.cantidad_en_stock < cantidad) {
-        res.send(`<script>alert("No hay suficientes unidades de '${insumo}' en bodega sólo hay '${encontrarIdIngresos.unidades_ingresadas}' unidades"); window.location.href = "/deliver"</script>`)
+        res.send(`<script>alert("No hay suficientes unidades de '${insumo}' en bodega sólo hay '${encontrarStock.cantidad_en_stock}' unidades"); window.location.href = "/entregar_insumo?token=${token}"</script>`)
     }if (encontrarStock && encontrarStock.cantidad_en_stock > cantidad) {
-        await agregar_entrega(encontrarNombreTipo.id_insumo, encontrarNombreTipo.id_tipo_insumo, encontrarBodega.id_bodega, area, cantidad, nombre, date)
+        await agregar_entrega(encontrarNombreTipo.id_insumo, encontrarNombreTipo.id_tipo_insumo, encontrarBodega.id_bodega, area, cantidad, nombre, fecha)
         await descontar_unidades(encontrarNombreTipo.id_insumo, cantidad)
-        res.send(`<script>alert("Se han entregado ${cantidad} unidades de '${insumo}' para el departamento de '${encontrarNombreArea.nombre_area}' y han sido retiradas por '${nombre}'"); window.location.href = "/deliver"</script>`)
+        res.send(`<script>alert("Se han entregado ${cantidad} unidades de '${insumo}' para el departamento de '${encontrarNombreArea.nombre_area}' y han sido retiradas por '${nombre}'"); window.location.href = "/entregar_insumo?token=${token}"</script>`)
     }
 
 })

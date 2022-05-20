@@ -3,7 +3,7 @@
 </div>
 <hr class="w-50 container" />
 
-<form class="container mt-4 w-55 mb-3 align-items-center" action="/deliver_items" method="post">
+<form class="container mt-4 w-55 mb-3 align-items-center" action="/entregar_insumos?token={{token}}" method="post">
     <div class="row">
         <div class="col-10">
         <label class="form-label">Busca un insumo:</label>
@@ -43,7 +43,7 @@
         <input name="fecha" id="fecha" type="date" value="2022-05-06" required/>
     </div>
   <button class="btn btn-primary mt-3 mb-5">Entregar</button>
-    <a href="/storekeeper"><button type="button" class="btn btn-primary mt-3 mb-5" >Volver</button></a>
+    <a href="/bodeguero?token={{token}}"><button type="button" class="btn btn-primary mt-3 mb-5" >Volver</button></a>
 </form>
 <script>
     const fecha = new Date().toISOString().slice(0,10)

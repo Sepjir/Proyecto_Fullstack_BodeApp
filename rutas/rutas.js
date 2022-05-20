@@ -21,7 +21,7 @@ const rutas = {
     registrarUsuario:"/registrar_usuario",
     verificar:"/verificar",
     ingreso:"/ingreso",
-    inicio:"/inicio"
+    inicio:"/"
 }
 
 module.exports = {rutas}
