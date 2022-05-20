@@ -6,7 +6,7 @@ const pool = new Pool({
 })
 
 //Consulta para obtener insumos
-async function get_insumos() {
+async function obtener_insumos() {
     try {
         const result = await pool.query("SELECT * FROM insumo ORDER BY id_insumo")
         return result.rows
@@ -161,7 +161,7 @@ async function add_supply(id_insumo, id_tipo_insumo, id_bodega, unidades, fecha)
 }
 
 //consulta para obtener información de la tabla ingresos
-async function get_ingresos() {
+async function obtener_ingresos() {
     try {
         const result = await pool.query("SELECT * FROM ingresos;")
         return result.rows
@@ -171,7 +171,7 @@ async function get_ingresos() {
 }
 
 //consulta para agregar información a la tabla egresos de mercaderia
-async function add_deliver(id_insumo, id_tipo_insumo, id_bodega, id_area, unidades, quienRetiro, fecha) {
+async function agregar_entrega(id_insumo, id_tipo_insumo, id_bodega, id_area, unidades, quienRetiro, fecha) {
     try {
         const result = await pool.query("INSERT INTO egresos (id_insumo, id_tipo_insumo, id_area, id_bodega, cantidad_saliente, persona_recibe, fecha_egreso) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING*;",
         [`${id_insumo}`, `${id_tipo_insumo}`,`${id_area}`, `${id_bodega}`, `${unidades}`, `${quienRetiro}`, `${fecha}`]
@@ -195,7 +195,7 @@ async function add_stock(id_insumo, id_tipo_insumo, id_bodega, cantidad_en_stock
 }
 
 //consulta para extraer datos de tabla stock
-async function get_stock() {
+async function obtener_stock() {
     try {
         const result = await pool.query("SELECT * FROM stock;")
         return result.rows
@@ -217,7 +217,7 @@ async function add_units(id_insumo, cantidad_en_stock) {
 }
 
 //transaccion: reducción de unidades en stock
-async function less_units(id_insumo, cantidad_en_stock) {
+async function descontar_unidades(id_insumo, cantidad_en_stock) {
     try {
         const result = await pool.query("UPDATE stock SET cantidad_en_stock = cantidad_en_stock - $2 WHERE id_insumo = $1 RETURNING*;",
         [`${id_insumo}`, `${cantidad_en_stock}`]
@@ -270,7 +270,7 @@ async function stock_critico() {
 
 
 module.exports = {
-    get_insumos,
+    obtener_insumos,
     obtener_bodegas,
     agregar_bodega,
     add_user,
@@ -284,12 +284,12 @@ module.exports = {
     obtener_tipo_insumos_y_nombre,
     add_insumo,
     add_supply,
-    get_ingresos,
-    add_deliver,
-    get_stock,
+    obtener_ingresos,
+    agregar_entrega,
+    obtener_stock,
     add_stock,
     add_units,
-    less_units,
+    descontar_unidades,
     reporte_fechas_egresos,
     reporte_fechas_ingresos,
     stock_actual,

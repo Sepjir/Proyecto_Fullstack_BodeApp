@@ -5,7 +5,7 @@ const exphbs = require("express-handlebars")
 const {rutas} = require("./rutas/rutas")
 //consultas a base de datos
 const {
-    get_insumos,
+    obtener_insumos,
     obtener_bodegas,
     add_user,
     get_users,
@@ -19,12 +19,12 @@ const {
     obtener_tipo_insumos_y_nombre,
     add_insumo,
     add_supply,
-    get_ingresos,
-    add_deliver,
-    get_stock,
+    obtener_ingresos,
+    agregar_entrega,
+    obtener_stock,
     add_stock,
     add_units,
-    less_units,
+    descontar_unidades,
     reporte_fechas_egresos,
     reporte_fechas_ingresos,
     stock_actual,
@@ -150,7 +150,7 @@ app.get("/storekeeper", (req, res) => {
 
 //ruta vista para ingresar mercadería a la bodega
 app.get("/reception", async (_, res) => {
-    const insumos = await get_insumos()
+    const insumos = await obtener_insumos()
     const bodegas = await obtener_bodegas()
     res.render("reception", {
         layout: "reception",
@@ -164,19 +164,19 @@ app.post("/add_stock", async (req, res) => {
     const {name, storehouse, units, date} = req.body
     const nameAndType = await obtener_tipo_insumos_y_nombre()
     const storehouseName = await obtener_bodegas()
-    const stock = await get_stock()
+    const stock = await obtener_stock()
     const findId = nameAndType.find((i) => name == i.nombre_de_insumo)
     const findStorehouse = storehouseName.find((s) => storehouse == s.id_bodega)
-    const findStock = stock.find((st) => st.id_insumo == findId.id_insumo)
-    if (!findStock) {
+    const encontrarStock = stock.find((st) => st.id_insumo == findId.id_insumo)
+    if (!encontrarStock) {
         await add_stock(findId.id_insumo, findId.id_tipo_insumo, storehouse, units)
         await add_supply(findId.id_insumo, findId.id_tipo_insumo, storehouse, units, date)
         return res.send(`<script>alert("Se han ingresado a la bodega '${findStorehouse.nombre_bodega}' ${units} unidades de '${name}' de forma exitosa"); window.location.href = "/reception"</script>`)
     }
-    if (findStock.id_bodega != storehouse) {
-        return res.send(`<script>alert("La bodega para el insumo '${name}' es la BODEGA ${findStock.id_bodega} y haz elegido la BODEGA ${storehouse}, vuelve a intentarlo"); window.location.href = "/reception"</script>`)
+    if (encontrarStock.id_bodega != storehouse) {
+        return res.send(`<script>alert("La bodega para el insumo '${name}' es la BODEGA ${encontrarStock.id_bodega} y haz elegido la BODEGA ${storehouse}, vuelve a intentarlo"); window.location.href = "/reception"</script>`)
     }
-    if (findStock) {
+    if (encontrarStock) {
         await add_supply(findId.id_insumo, findId.id_tipo_insumo, storehouse, units, date)
         await add_units(findId.id_insumo, units)
         return res.send(`<script>alert("Se han ingresado a la bodega '${findStorehouse.nombre_bodega}' ${units} unidades de '${name}' de forma exitosa"); window.location.href = "/reception"</script>`)
@@ -184,37 +184,37 @@ app.post("/add_stock", async (req, res) => {
 })
 
 //ruta para vista de entrega de insumos
-app.get("/deliver", async (req, res) => {
-    const insumos = await get_insumos()
+app.get(rutas.entregarInsumo, async (req, res) => {
+    const insumos = await obtener_insumos()
     const areas = await obtener_areas()
-    res.render("deliver" ,{
-        layout: "deliver",
+    res.render("entrega" ,{
+        layout: "entrega",
         insumos,
         areas
     })
 })
 
 //ruta POST para entregar insumos a departamentos
-app.post("/deliver_items", async (req, res) => {
-    const {product, units, area, name, date} = req.body
+app.post(rutas.entregarInsumos, async (req, res) => {
+    const {insumo, cantidad, area, nombre, fecha} = req.body
     const areas = await obtener_areas()
-    storehouseName = await obtener_bodegas()
-    const nameAndType = await obtener_tipo_insumos_y_nombre()
-    const ingresos = await get_ingresos()
-    const stock = await get_stock()
-    const findNameAndType = nameAndType.find((s) => s.nombre_de_insumo == product)
-    const findIdIngresos = ingresos.find((i) => i.id_insumo == findNameAndType.id_insumo)
-    const findNameArea = areas.find((a) => a.id_area == area)
-    const findStock = stock.find((st) => st.id_insumo == findIdIngresos.id_insumo)
-    const findStorehouse = storehouseName.find((store) => store.id_bodega == findIdIngresos.id_bodega)
-    if (!findStock) {
-        res.send(`<script>alert("No existe el insumo '${product}' en bodega"); window.location.href = "/deliver"</script>`)
-    }if (findStock && findStock.cantidad_en_stock < units) {
-        res.send(`<script>alert("No hay suficientes unidades de '${product}' en bodega sólo hay '${findIdIngresos.unidades_ingresadas}' unidades"); window.location.href = "/deliver"</script>`)
-    }if (findStock && findStock.cantidad_en_stock > units) {
-        await add_deliver(findNameAndType.id_insumo, findNameAndType.id_tipo_insumo, findStorehouse.id_bodega, area, units, name, date)
-        await less_units(findNameAndType.id_insumo,units)
-        res.send(`<script>alert("Se han entregado ${units} unidades de '${product}' para el departamento de '${findNameArea.nombre_area}' y han sido retiradas por '${name}'"); window.location.href = "/deliver"</script>`)
+    const nombreBodega = await obtener_bodegas()
+    const nombreTipo = await obtener_tipo_insumos_y_nombre()
+    const ingresos = await obtener_ingresos()
+    const stock = await obtener_stock()
+    const encontrarNombreTipo = nombreTipo.find((s) => s.nombre_de_insumo == insumo)
+    const encontrarIdIngresos = ingresos.find((i) => i.id_insumo == encontrarNombreTipo.id_insumo)
+    const encontrarNombreArea = areas.find((a) => a.id_area == area)
+    const encontrarStock = stock.find((st) => st.id_insumo == encontrarIdIngresos.id_insumo)
+    const encontrarBodega = nombreBodega.find((store) => store.id_bodega == encontrarIdIngresos.id_bodega)
+    if (!encontrarStock) {
+        res.send(`<script>alert("No existe el insumo '${insumo}' en bodega"); window.location.href = "/deliver"</script>`)
+    }if (encontrarStock && encontrarStock.cantidad_en_stock < cantidad) {
+        res.send(`<script>alert("No hay suficientes unidades de '${insumo}' en bodega sólo hay '${encontrarIdIngresos.unidades_ingresadas}' unidades"); window.location.href = "/deliver"</script>`)
+    }if (encontrarStock && encontrarStock.cantidad_en_stock > cantidad) {
+        await agregar_entrega(encontrarNombreTipo.id_insumo, encontrarNombreTipo.id_tipo_insumo, encontrarBodega.id_bodega, area, cantidad, nombre, date)
+        await descontar_unidades(encontrarNombreTipo.id_insumo, cantidad)
+        res.send(`<script>alert("Se han entregado ${cantidad} unidades de '${insumo}' para el departamento de '${encontrarNombreArea.nombre_area}' y han sido retiradas por '${nombre}'"); window.location.href = "/deliver"</script>`)
     }
 
 })
