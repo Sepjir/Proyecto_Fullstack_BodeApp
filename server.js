@@ -70,8 +70,9 @@ app.get(rutas.ingreso, (req, res) => {
 //ruta para identificar a los usuarios con JWT
 app.get(rutas.verificar, async (req, res) => {
     const {email, contrasena} = req.query
-    const users = await obtener_usuarios()
-    const auth = await users.find((s) => s.mail == email && s.contrasena == contrasena)
+    const usuarios = await obtener_usuarios()
+    console.log(usuarios)
+    const auth = usuarios.find((s) => s.mail == email && s.contrasena == contrasena)
     if (!auth) {
         return res.status(401).send(`<script>alert("Email y/o contraseña no válidos"); window.location.href = "/ingreso"</script>`)
     }if (auth.id_tipo_usuario == 2) {
