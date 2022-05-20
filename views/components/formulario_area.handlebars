@@ -4,7 +4,7 @@
     <hr class="w-50 container" />
 </div>
 <div class="container">
-    <form action="/add_area" method="post">
+    <form action="/agregar_area" method="post">
     <div class="row">
         <div class="mt-3 col-8">
             <label class="form-label">Nuevo departamento:</label>
@@ -28,7 +28,7 @@
                     <tr>
                     <th scope="row">{{this.id_area}}</th>
                     <td>{{this.nombre_area}}</td>
-                    <td><a href="/delete_area/{{this.id_area}}"><button type="button" class="btn btn-danger">Eliminar</button></a></td>
+                    <td><a href="/borrar_area/{{this.id_area}}"><button type="button" class="btn btn-danger">Eliminar</button></a></td>
                     </tr>
                     {{/each}}
                 </tbody>

@@ -13,8 +13,8 @@ const {
     agregar_bodega,
     borrar_bodega,
     obtener_areas,
-    add_area,
-    delete_area,
+    agregar_area,
+    borrar_area,
     obtener_tipo_insumos,
     obtener_tipo_insumos_y_nombre,
     add_insumo,
@@ -222,8 +222,8 @@ app.post("/deliver_items", async (req, res) => {
 //ruta para vista que añade una nueva area/departamento
 app.get(rutas.agregarArea, async(req, res) => {
     const areas = await obtener_areas()
-    res.render("add_areas", {
-        layout: "add_areas",
+    res.render("agregar_area", {
+        layout: "agregar_area",
         areas
     })
 })
@@ -232,15 +232,15 @@ app.get(rutas.agregarArea, async(req, res) => {
 app.post(rutas.agregarArea, async(req, res) => {
     const {area} = req.body
     const areaMayuscula = area.toUpperCase()
-    await add_area(areaMayuscula)
-    res.send(`<script>alert("El departamento '${areaMayuscula}' se ha añadido exitosamente"); window.location.href = "/add_area"</script>`)
+    await agregar_area(areaMayuscula)
+    res.send(`<script>alert("El departamento '${areaMayuscula}' se ha añadido exitosamente"); window.location.href = "/agregar_area"</script>`)
 })
 
 //ruta para borrar un departamento
-app.get("/delete_area/:id", async(req, res) => {
+app.get(rutas.borrarArea, async(req, res) => {
     const {id} = req.params
-    await delete_area(id)
-    res.send(`<script>alert("El departamento con id '${id}' se ha eliminado exitosamente"); window.location.href = "/add_area"</script>`)
+    await borrar_area(id)
+    res.send(`<script>alert("El departamento con id '${id}' se ha eliminado exitosamente"); window.location.href = "/agregar_area"</script>`)
 })
 
 //ruta para la vista de añadir insumos a la lista general

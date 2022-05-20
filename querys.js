@@ -125,7 +125,7 @@ async function obtener_areas() {
 }
 
 //consulta para añadir nuevos departamentos
-async function add_area(area) {
+async function agregar_area(area) {
     try {
         const result = await pool.query("INSERT INTO area (nombre_area) VALUES ($1) RETURNING*;",
         [`${area}`]
@@ -137,7 +137,7 @@ async function add_area(area) {
 }
 
 //consulta para borrar departamentos
-async function delete_area(id) {
+async function borrar_area(id) {
     try {
         const result = await pool.query("DELETE FROM area WHERE id_area=$1 RETURNING*;",
         [`${id}`]
@@ -278,8 +278,8 @@ module.exports = {
     modificar_permiso_usuario,
     borrar_bodega,
     obtener_areas,
-    add_area,
-    delete_area,
+    agregar_area,
+    borrar_area,
     obtener_tipo_insumos,
     obtener_tipo_insumos_y_nombre,
     add_insumo,

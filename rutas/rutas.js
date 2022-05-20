@@ -8,7 +8,8 @@ const rutas = {
     borrarBodega:"/borrar_bodega/:id",
     agregarInsumo:"/agregar_insumo",
     agregarInsumos:"/agregar_insumos",
-    agregarArea:"/agregar_area"
+    agregarArea:"/agregar_area",
+    borrarArea:"/borrar_area/:id"
 }
 
 module.exports = {rutas}
