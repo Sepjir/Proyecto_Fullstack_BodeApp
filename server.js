@@ -1,7 +1,7 @@
 //Express, rutas y handlebars
 const express = require("express")
 const app = express()
-const port = 3000
+const port = process.env.PORT || 5000
 const exphbs = require("express-handlebars")
 const {rutas} = require("./rutas/rutas")
 
@@ -71,7 +71,7 @@ app.get(rutas.ingreso, (req, res) => {
 app.get(rutas.verificar, async (req, res) => {
     const {email, contrasena} = req.query
     const users = await obtener_usuarios()
-    const auth = users.find((s) => s.mail == email && s.contrasena == contrasena)
+    const auth = await users.find((s) => s.mail == email && s.contrasena == contrasena)
     if (!auth) {
         return res.status(401).send(`<script>alert("Email y/o contraseña no válidos"); window.location.href = "/ingreso"</script>`)
     }if (auth.id_tipo_usuario == 2) {
